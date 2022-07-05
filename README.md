@@ -18,16 +18,7 @@ Using `pip` for [`pycatch22`](https://pypi.org/project/pycatch22/):
 pip install pycatch22
 ```
 
-### Alternate (Legacy)
-
-Using `setuptools`:
-
-```
-python3 setup.py build
-python3 setup.py install
-```
-
-Testing:
+## Testing
 
 ```
 python3 tests/testing.py
