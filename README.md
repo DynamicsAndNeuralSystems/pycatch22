@@ -12,7 +12,11 @@ For details about the features, see the [main _catch22_ repository](https://gith
 
 ## Installation
 
+Using `pip` for [`pycatch22`](https://pypi.org/project/pycatch22/):
 
+```
+pip install pycatch22
+```
 
 ### Alternate (Legacy)
 
