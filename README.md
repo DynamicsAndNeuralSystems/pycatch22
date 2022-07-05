@@ -23,12 +23,31 @@ python3 setup.py build
 python3 setup.py install
 ```
 
-Test:
+Testing:
 
 ```
 python3 tests/testing.py
-``
+```
 
+If `pycatch22` is installed correctly, this should output results for 24 features for each of two test time series.
+
+## Usage
+
+Each feature function can be accessed individually and takes arrays as tuple or lists (not `numpy` arrays).
+For example, for loaded data `tsData` in Python:
+
+```python3
+import pycatch22
+tsData = [1,2,4,3] # (or more interesting data!)
+pycatch22.CO_f1ecac(tsData)
+```
+
+All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
+Usage:
+
+```python3
+pycatch22.catch22_all(tsData)
+```
 
 ## Usage notes
 
