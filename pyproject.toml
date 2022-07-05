@@ -1,12 +1,13 @@
 [project]
 name = "pycatch22"
-version = "0.4.0"
+version = "0.4.1"
 authors = [
-    {name="Carl H Lubba"},
-    {email="carl.lubba@gmx.de"},
+    {name = "Carl H Lubba"},
+    {email = "carl.lubba@gmx.de"},
 ]
 maintainers = [
-    {name="Ben D Fulcher", email="ben.fulcher@sydney.edu.au"},
+    {name = "Ben D Fulcher"},
+    {email = "ben.fulcher@sydney.edu.au"},
 ]
 description = "22 CAnonical Time-series Features"
 readme = "README.md"
@@ -19,7 +20,7 @@ classifiers = [
 
 [project.urls]
 Repository = "https://github.com/DynamicsAndNeuralSystems/pycatch22"
-Motherpage = "https://github.com/DynamicsAndNeuralSystems/catch22"
+MotherCatch22 = "https://github.com/DynamicsAndNeuralSystems/catch22"
 
 [build-system]
 requires = [
