@@ -1,0 +1,8 @@
+codegen
+*.prj
+*.mexmaci64
+*.o
+*.pyc
+build
+*.egg-info
+dist
