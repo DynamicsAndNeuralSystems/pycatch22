@@ -1,7 +1,9 @@
 import catch22_C
 
-
 def catch22_all(data, catch24=False):
+    '''
+    Extract the catch22 feature set from an input time series.
+    '''
 
     features = [
         'DN_HistogramMode_5',

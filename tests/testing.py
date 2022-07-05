@@ -1,28 +1,22 @@
-import catch22
+import pycatch22
+import os
 
-for dataFile in ['../testData/test.txt', '../testData/test2.txt']:
+# Whether to compute the mean and standard deviation:
+doCatch24 = True
 
-    print ('\n'),  dataFile
+# The two data files
+testData = [os.path.join("tests", "testData1.txt"),
+            os.path.join("tests", "testSinusoid.txt")]
 
-    data = [line.rstrip().split(' ') for line in open(dataFile)]
-    flat_data = [float(item) for sublist in data for item in sublist]
+# Extract features from each data file in testData
+for dataFile in testData:
 
-    catchOut = catch22.catch22_all(flat_data)
-
-    featureNames = catchOut['names']
-    featureValues = catchOut['values']
-
-    for featureName, featureValue in zip(featureNames, featureValues):
-        print('%s : %1.6f' % (featureName, featureValue))
-
-for dataFile in ['../testData/test.txt', '../testData/test2.txt']:
-    
-    print ('\n'),  dataFile
+    print ('\n'), dataFile
 
     data = [line.rstrip().split(' ') for line in open(dataFile)]
     flat_data = [float(item) for sublist in data for item in sublist]
 
-    catchOut = catch22.catch22_all(flat_data, True)
+    catchOut = pycatch22.catch22_all(flat_data,catch24 = doCatch24)
 
     featureNames = catchOut['names']
     featureValues = catchOut['values']

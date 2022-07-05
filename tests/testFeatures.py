@@ -1,18 +1,18 @@
 import os
 import pandas as pd
-import catch22
+import pycatch22
 
 #-------------------------------------------------------------------------------
 def giveMeFeatureVector(tsData):
     '''
     Returns a catch-22 feature vector from input time-series data
     '''
-    features = dir(catch22)
+    features = dir(pycatch22)
     features = [item for item in features if not '__' in item]
 
     featureVector = []
     for testFun in features:
-        featureFun = getattr(catch22,testFun)
+        featureFun = getattr(pycatch22,testFun)
         featureVector.append(featureFun(tsData))
 
     return featureVector

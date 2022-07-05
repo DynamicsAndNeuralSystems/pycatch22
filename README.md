@@ -4,11 +4,30 @@
 
 [_catch22_](https://github.com/DynamicsAndNeuralSystems/catch22) is a collection of 22 time-series features coded in C that can be run from Python, R, Matlab, and Julia.
 
-This package provides a python implementation.
+This package provides a python implementation as the module _pycatch22_.
 
 For details about the features, see the [main _catch22_ repository](https://github.com/DynamicsAndNeuralSystems/catch22) and its [wiki](https://github.com/DynamicsAndNeuralSystems/catch22/wiki), or read the paper:
 
 - [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+
+## Installation
+
+
+
+### Alternate (Legacy)
+
+Using `setuptools`:
+
+```
+python3 setup.py build
+python3 setup.py install
+```
+
+Test:
+
+```
+python3 tests/testing.py
+``
 
 
 ## Usage notes
