@@ -12,17 +12,6 @@ For details about the features, see the [main _catch22_ repository](https://gith
 
 ## Installation
 
-### Manual
-
-Using `setuptools`:
-
-```
-python3 setup.py build
-python3 setup.py install
-```
-
-### `pip`
-
 Using `pip` for [`pycatch22`](https://pypi.org/project/pycatch22/):
 
 ```
@@ -55,9 +44,18 @@ Usage:
 pycatch22.catch22_all(tsData)
 ```
 
-## Usage notes
+### Usage notes
 
 - When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
 - __Important Note:__ _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
   - From _catch22_ v0.3, If the location and spread of the raw time-series distribution may be important for your application, we suggest applying the function argument `catch24 = True` to your call to the _catch22_ function in the language of your choice.
   This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.
+
+### Manual install
+
+If you find issues with the `pip` install, you can also install using `setuptools`:
+
+```
+python3 setup.py build
+python3 setup.py install
+```
