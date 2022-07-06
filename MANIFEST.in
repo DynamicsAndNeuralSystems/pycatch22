@@ -1,1 +1,1 @@
-include src/C/*.h
+graft src

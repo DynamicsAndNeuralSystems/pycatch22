@@ -14,6 +14,7 @@ extension_mod = Extension(name = "catch22_C",
 
 setup(
     packages = find_packages(where = "src",
-                             include=["pycatch22"]),
+                            include = ["pycatch22"]),
+    package_dir = {"": "src"},
     ext_modules = [extension_mod]
 )
