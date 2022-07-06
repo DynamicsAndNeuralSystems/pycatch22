@@ -1,7 +1,7 @@
 from setuptools import setup, Extension, find_packages
 import os
 
-sourceDir = os.path.join("src","C");
+sourceDir = os.path.join("src", "C");
 
 sourceFileList = [os.path.join(sourceDir, file) for file in os.listdir(sourceDir) if file.endswith(
     ".c") and not 'main' in file]
@@ -13,7 +13,9 @@ extension_mod = Extension(name = "catch22_C",
     include_dirs = [sourceDir])  # Header files are here
 
 setup(
-    include_dirs = [os.path.join("..", "C"), os.path.join("src", "C")],
+    include_dirs = [sourceDir],
+    packages = find_packages(where = "src",
+            include=["pycatch22"]),
     ext_modules = [extension_mod],
     include_package_data = True
 )
