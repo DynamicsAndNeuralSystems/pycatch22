@@ -13,9 +13,7 @@ extension_mod = Extension(name = "catch22_C",
     include_dirs = [sourceDir])  # Header files are here
 
 setup(
-    include_dirs = [sourceDir],
     packages = find_packages(where = "src",
-            include=["pycatch22"]),
-    ext_modules = [extension_mod],
-    include_package_data = True
+                             include=["pycatch22"]),
+    ext_modules = [extension_mod]
 )
