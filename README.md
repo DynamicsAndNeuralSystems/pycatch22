@@ -12,6 +12,17 @@ For details about the features, see the [main _catch22_ repository](https://gith
 
 ## Installation
 
+### Manual
+
+Using `setuptools`:
+
+```
+python3 setup.py build
+python3 setup.py install
+```
+
+### `pip`
+
 Using `pip` for [`pycatch22`](https://pypi.org/project/pycatch22/):
 
 ```
