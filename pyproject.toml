@@ -1,6 +1,6 @@
 [project]
 name = "pycatch22"
-version = "0.4.1"
+version = "0.4.2"
 authors = [
     {name = "Carl H Lubba"},
     {email = "carl.lubba@gmx.de"},
@@ -19,13 +19,11 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/DynamicsAndNeuralSystems/pycatch22"
-MotherCatch22 = "https://github.com/DynamicsAndNeuralSystems/catch22"
+"GitHub Repository (pycatch22)" = "https://github.com/DynamicsAndNeuralSystems/pycatch22"
+"Mother Repository (catch22)" = "https://github.com/DynamicsAndNeuralSystems/catch22"
 
 [build-system]
-requires = [
-    "setuptools>=61.0"
-]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
