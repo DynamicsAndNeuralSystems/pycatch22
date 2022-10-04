@@ -18,6 +18,9 @@ Using `pip` for [`pycatch22`](https://pypi.org/project/pycatch22/):
 pip install pycatch22
 ```
 
+[If this doesn't work, make sure you are using the latest `setuptools`: `pip install setuptools --upgrade`.
+A manual install (bottom of this page) is a last resort.]
+
 ## Testing
 
 ```
