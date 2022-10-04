@@ -41,13 +41,14 @@ pycatch22.CO_f1ecac(tsData)
 ```
 
 All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
-Usage (catch22 only):
+
+Usage (computing 22 features: catch22):
 
 ```python3
 pycatch22.catch22_all(tsData)
 ```
 
-Usage (catch24: catch22 + mean + std):
+Usage (computing 24 features: catch24 = catch22 + mean + standard deviation):
 
 ```python3
 pycatch22.catch22_all(tsData,catch24=True)
