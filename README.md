@@ -23,6 +23,18 @@ If this doesn't work, make sure you are using the latest `setuptools`: `pip inst
 
 If you come across errors with version resolution, you should try something like: `pip install pycatch22==0.4.2 --use-deprecated=legacy-resolver`.
 
+It is also a [package on anaconda](https://anaconda.org/conda-forge/pycatch22) thanks to [@rpanai](https://github.com/rpanai), which you can install via `conda`:
+
+```
+conda install -c conda-forge pycatch22
+```
+
+or `mamba`:
+
+```
+mamba install -c conda-forge pycatch22
+```
+
 [A manual install (bottom of this page) is a last resort.]
 
 ## Testing
