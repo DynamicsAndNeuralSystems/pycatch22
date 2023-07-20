@@ -72,7 +72,7 @@ pycatch22.catch22_all(tsData,catch24=True)
 
 ### Template analysis script
 
-Thanks to @jmoo2880 for putting together a [demonstration notebook](https://github.com/jmoo2880/c22-usage-examples/) for using pycatch22 to extract features from a time-series dataset.
+Thanks to [@jmoo2880](https://github.com/jmoo2880) for putting together a [demonstration notebook](https://github.com/jmoo2880/c22-usage-examples/) for using pycatch22 to extract features from a time-series dataset.
 
 ### Usage notes
 
