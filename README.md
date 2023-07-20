@@ -37,7 +37,7 @@ mamba install -c conda-forge pycatch22
 
 [A manual install (bottom of this page) is a last resort.]
 
-## Testing
+### Testing
 
 ```
 python3 tests/testing.py
