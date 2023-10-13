@@ -19,7 +19,7 @@ for dataFile in testData:
     data = [line.rstrip().split(' ') for line in open(dataFile)]
     flat_data = [float(item) for sublist in data for item in sublist]
 
-    catchOut = pycatch22.catch22_all(flat_data,catch24 = doCatch24,short_names=short_names)
+    catchOut = pycatch22.catch22_all(flat_data,catch24 = doCatch24,short_names = short_names)
 
     featureNames = catchOut['names']
     featureNamesShort = catchOut['short_names']

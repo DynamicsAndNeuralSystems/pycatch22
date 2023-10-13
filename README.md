@@ -72,7 +72,8 @@ Usage (computing 24 features: _catch24_ = _catch22_ + mean + standard deviation)
 pycatch22.catch22_all(tsData,catch24=True)
 ```
 
-We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://app.gitbook.com/o/-MfehZqaCWnsSRDIdUG8/s/-MfHFY4lvzOz3IPaA3wm/feature-overview-table)). These short names can be included in the output from `catch22_all()` by setting `short_names=True` as follows:
+We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://app.gitbook.com/o/-MfehZqaCWnsSRDIdUG8/s/-MfHFY4lvzOz3IPaA3wm/feature-overview-table)).
+These short names can be included in the output from `catch22_all()` by setting `short_names=True` as follows:
 
 ```python3
 pycatch22.catch22_all(tsData,catch24=True,short_names=True)
