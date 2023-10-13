@@ -30,7 +30,7 @@ def catch22_all(data, catch24=False):
         'FC_LocalSimple_mean3_stderr'
     ]
 
-    if catch24 is True:
+    if catch24:
         features.append('DN_Mean')
         features.append('DN_Spread_Std')
 
