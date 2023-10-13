@@ -1,5 +1,7 @@
 # _pycatch22_ - CAnonical Time-series CHaracteristics in python
 
+<img src="img/catch22_logo_square.svg" width="250" height="250"/>
+
 ## About
 
 [_catch22_](https://github.com/DynamicsAndNeuralSystems/catch22) is a collection of 22 time-series features coded in C that can be run from Python, as well as [R](https://github.com/hendersontrent/Rcatch22), [Matlab](https://github.com/DynamicsAndNeuralSystems/catch22), and [Julia](https://github.com/brendanjohnharris/Catch22.jl).
