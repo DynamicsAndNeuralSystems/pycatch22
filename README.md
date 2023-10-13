@@ -60,16 +60,22 @@ pycatch22.CO_f1ecac(tsData)
 
 All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
 
-Usage (computing 22 features: catch22):
+Usage (computing 22 features: _catch22_):
 
 ```python3
 pycatch22.catch22_all(tsData)
 ```
 
-Usage (computing 24 features: catch24 = catch22 + mean + standard deviation):
+Usage (computing 24 features: _catch24_ = _catch22_ + mean + standard deviation):
 
 ```python3
 pycatch22.catch22_all(tsData,catch24=True)
+```
+
+We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://app.gitbook.com/o/-MfehZqaCWnsSRDIdUG8/s/-MfHFY4lvzOz3IPaA3wm/feature-overview-table)). These short names can be included in the output from `catch22_all()` by setting `short_names=True` as follows:
+
+```python3
+pycatch22.catch22_all(tsData,catch24=True,short_names=True)
 ```
 
 ### Template analysis script

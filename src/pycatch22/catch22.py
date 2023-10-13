@@ -1,8 +1,18 @@
 import catch22_C
 
-def catch22_all(data, catch24=False):
+def catch22_all(data, catch24=False, short_names=False):
     '''
     Extract the catch22 feature set from an input time series.
+
+    Parameters
+    ----------
+    data : array_like
+        Input time-series data.
+    catch24 : bool, optional
+        If True, include the two catch24 features (mean and standard deviation) in the output.
+    short_names : bool, optional
+        If True, also include the short names of the features in the output.
+
     '''
 
     features = [
@@ -30,9 +40,36 @@ def catch22_all(data, catch24=False):
         'FC_LocalSimple_mean3_stderr'
     ]
 
+    features_short = [
+        'mode_5',
+        'mode_10',
+        'acf_timescale',
+        'acf_first_min',
+        'ami2',
+        'trev',
+        'high_fluctuation',
+        'stretch_high',
+        'transition_matrix',
+        'periodicity',
+        'embedding_dist',
+        'ami_timescale',
+        'whiten_timescale',
+        'outlier_timing_pos',
+        'outlier_timing_neg',
+        'centroid_freq',
+        'stretch_decreasing',
+        'entropy_pairs',
+        'rs_range',
+        'dfa',
+        'low_freq_power',
+        'forecast_error'
+    ]
+
     if catch24:
         features.append('DN_Mean')
         features.append('DN_Spread_Std')
+        features_short.append('mean')
+        features_short.append('SD')
 
     data = list(data)
     featureOut = []
@@ -40,4 +77,7 @@ def catch22_all(data, catch24=False):
         featureFun = getattr(catch22_C, f)
         featureOut.append(featureFun(data))
 
-    return {'names': features, 'values': featureOut}
+    if short_names:
+        return {'names': features, 'short_names': features_short, 'values': featureOut}
+    else:
+        return {'names': features, 'values': featureOut}
