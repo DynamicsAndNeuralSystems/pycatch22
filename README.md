@@ -39,14 +39,6 @@ mamba install -c conda-forge pycatch22
 
 [A manual install (bottom of this page) is a last resort.]
 
-### Testing
-
-```
-python3 tests/testing.py
-```
-
-If `pycatch22` is installed correctly, this should output results for 24 features for each of two test time series.
-
 ## Usage
 
 Each feature function can be accessed individually and takes arrays as tuple or lists (not `numpy` arrays).
