@@ -1,4 +1,5 @@
 import catch22_C
+import pandas as pd
 
 def catch22_all(data, catch24=False, short_names=False):
     '''
@@ -12,6 +13,11 @@ def catch22_all(data, catch24=False, short_names=False):
         If True, include the two catch24 features (mean and standard deviation) in the output.
     short_names : bool, optional
         If True, also include the short names of the features in the output.
+
+    Output
+    ------
+    feature_results : pandas.DataFrame
+        A dataframe containing the names and values of the extracted features.
 
     '''
 
@@ -72,12 +78,16 @@ def catch22_all(data, catch24=False, short_names=False):
         features_short.append('SD')
 
     data = list(data)
-    featureOut = []
-    for f in features:
-        featureFun = getattr(catch22_C, f)
-        featureOut.append(featureFun(data))
+    feature_values = []
+    for feature in features:
+        featureFun = getattr(catch22_C, feature)
+        feature_values.append(featureFun(data))
 
+    # Convert to a dataframe
+    feature_results = pd.DataFrame({'feature': features, 'value': feature_values})
+
+    # Add short names if requested
     if short_names:
-        return {'names': features, 'short_names': features_short, 'values': featureOut}
-    else:
-        return {'names': features, 'values': featureOut}
+        feature_results['short_name'] = features_short
+
+    return feature_results
