@@ -10,8 +10,15 @@ This package provides a python implementation as the module _pycatch22_, license
 
 ### What do the features do?
 
-This [GitBooks website](https://feature-based-time-series-analys.gitbook.io/catch22-features/) is dedicated to describing the features. For code implementation, see the [main _catch22_ repository](https://github.com/DynamicsAndNeuralSystems/catch22).
-There is also information in the paper [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+This [GitBooks website](https://feature-based-time-series-analys.gitbook.io/catch22-features/) is dedicated to describing the features.
+For their implementation in code, see the [main _catch22_ repository](https://github.com/DynamicsAndNeuralSystems/catch22).
+There is also information in the associated paper [&#x1F4D7; Lubba et al. (2019).](https://doi.org/10.1007/s10618-019-00647-x).
+
+### Acknowledgement :+1:
+
+If you use this software, please read and cite this open-access article:
+
+- &#x1F4D7; Lubba et al. [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x), _Data Min Knowl Disc_ __33__, 1821 (2019).
 
 ## Installation
 
