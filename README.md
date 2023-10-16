@@ -1,6 +1,6 @@
 # _pycatch22_ - CAnonical Time-series CHaracteristics in python
 
-<img src="img/catch22_logo_square.png" width="250" height="250"/>
+<img src="https://github.com/DynamicsAndNeuralSystems/pycatch22/raw/main/img/catch22_logo_square.png" width="250" height="250"/>
 
 ## About
 
