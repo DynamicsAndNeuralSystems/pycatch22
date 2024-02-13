@@ -1,4 +1,9 @@
-<p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
+<p align="center">
+    <picture>
+        <source srcset="img/catch22_logo_square_darkmode.png" media="(prefers-color-scheme: dark)">
+        <img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/>
+    </picture>
+</p>
 
 <h1 align="center"><em>pycatch22</em>: CAnonical Time-series CHaracteristics in python</h1>
 
