@@ -6,3 +6,5 @@ codegen
 build
 *.egg-info
 dist
+*.so
+.DS_Store
