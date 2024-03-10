@@ -22,5 +22,5 @@ jobs:
           pip install .
       - name: Run basic unit tests
         run: |
-          python -v ./tests/unit_tests.py
+          pytest -v ./tests/unit_tests.py
       
