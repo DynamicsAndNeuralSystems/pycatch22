@@ -76,7 +76,7 @@ def test_valid_input_types():
     expected_output(res_numpy)
 
 def test_inf_and_nan_input():
-    # pass in time series containing a NaN/inf, should return 0 (0.0) or NaN outputs depending on feature
+    # pass in time series containing a NaN/inf, should return 0 (0.0) or NaN/inf outputs depending on feature
     zero_outputs = [2, 3, 9] # indexes of features with expected 0 or 0.0 output
     test_vals = [np.nan, np.inf, -np.inf]
     for val_type in test_vals:
@@ -92,6 +92,19 @@ def test_inf_and_nan_input():
             else:
                 assert np.isnan(val), f"Expected NaN for feature {i+1} when testing ts containing {val_type}, got {val}."
         
+def test_individual_feature_methods():
+    # ensure each indiviudal feature method can be run in isolation
+    all_methods = dir(catch22)
+    data = list(np.random.randn(100))
+    methods = [getattr(catch22, method) for method in all_methods if callable(getattr(catch22, method))]
+    methods = methods[:-1]
+    assert len(methods) == 24, "Expected 24 individual feature methods."
+    for method in methods:
+        try:
+            method(data)
+        except Exception as excinfo:
+            pytest.fail(f"Method {method.__name__} raised an exception: {excinfo}")
+
     
 
 
