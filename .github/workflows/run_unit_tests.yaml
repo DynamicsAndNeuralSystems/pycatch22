@@ -16,4 +16,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
+      - name: Install pycatch22
+        run: |
+          pip install .
+      - name: Run basic unit tests
+        run: |
+          python -v ./tests/unit_tests.py
       
