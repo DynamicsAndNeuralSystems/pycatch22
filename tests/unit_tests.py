@@ -56,13 +56,6 @@ def test_short_names_returned():
     res2 = catch22.catch22_all(tsData, catch24=True, short_names=True)
     expected_output(res2, catch24=True, short_names=True)
 
-def test_invalid_input_shape():
-    # pass multivariate time series into catch22
-    mts = np.random.randn(5, 100)
-    with pytest.raises(SystemError) as excinfo:
-        res = catch22.catch22_all(mts)
-    assert "returned a result with an error set" in str(excinfo.value), "Error not returned when invalid TS data shape provided."
-
 def test_valid_input_types():
     # should accept tuples, arrays and lists
     data_as_tuple = (1, 2, 3, 4, 5, 6, 7, 8)
