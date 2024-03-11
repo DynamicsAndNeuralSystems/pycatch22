@@ -103,4 +103,3 @@ def test_features(dset, exp_out, new_out):
     if non_zero_diffs:
         non_zero_diffs_str = ", ".join([f"{k}: {v}" for k, v in non_zero_diffs.items()])
         pytest.fail(f"Non-zero feature differences found for dataset {dset}: {non_zero_diffs_str}")
-

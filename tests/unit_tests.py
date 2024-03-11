@@ -97,8 +97,3 @@ def test_individual_feature_methods():
             method(data)
         except Exception as excinfo:
             pytest.fail(f"Method {method.__name__} raised an exception: {excinfo}")
-
-    
-
-
-
