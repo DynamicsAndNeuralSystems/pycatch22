@@ -99,7 +99,7 @@ def test_features(dset, exp_out, new_out):
         diffs[feature] = feature_diff
     
     # get non-zero keys (if they exist)
-    non_zero_diffs = {k: v for k, v in diffs.items() if v < tol}    
+    non_zero_diffs = {k: v for k, v in diffs.items() if v > tol}    
     if non_zero_diffs:
         non_zero_diffs_str = ", ".join([f"{k}: {v}" for k, v in non_zero_diffs.items()])
         pytest.fail(f"Non-zero feature differences found for dataset {dset}: {non_zero_diffs_str}")
