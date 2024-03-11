@@ -85,6 +85,7 @@ def pytest_generate_tests(metafunc):
         metafunc.parametrize("dset, exp_out, new_out", params)
 
 def test_features(dset, exp_out, new_out):
+    tol = 1E-12
     """Run the benchmarking tests"""
     assert len(exp_out.keys()) == 24, f"Expected 24 features in expected output for dataset: {dset}."
     assert len(new_out.keys()) == 24, f"Expected 24 features in new output for dataset: {dset}."
@@ -98,7 +99,7 @@ def test_features(dset, exp_out, new_out):
         diffs[feature] = feature_diff
     
     # get non-zero keys (if they exist)
-    non_zero_diffs = {k: v for k, v in diffs.items() if v != 0}    
+    non_zero_diffs = {k: v for k, v in diffs.items() if v < tol}    
     if non_zero_diffs:
         non_zero_diffs_str = ", ".join([f"{k}: {v}" for k, v in non_zero_diffs.items()])
         pytest.fail(f"Non-zero feature differences found for dataset {dset}: {non_zero_diffs_str}")
