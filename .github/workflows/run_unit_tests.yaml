@@ -25,4 +25,7 @@ jobs:
       - name: Run basic unit tests
         run: |
           pytest -v ./tests/unit_tests.py
+      - name: Run feature benchmarking tests
+        run: |
+          pytest -v ./tests/test_features.py
       
