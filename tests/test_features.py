@@ -61,7 +61,7 @@ def compute_new_features():
         test_data = benchmark_datasets[dset]
         res = catch22.catch22_all(test_data, catch24=True)
         for (name, val) in zip(res['names'], res['values']):
-            dataset_dict_single[name] = val
+            dataset_dict_single[name] = float(val)
         dataset_dicts[dset] = dataset_dict_single
 
     return dataset_dicts
