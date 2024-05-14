@@ -22,8 +22,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
           pip install numpy
-          python setup.py build
-          python setup.py install
+          pip install .
       - name: Run basic unit tests
         run: |
           pytest -v ./tests/unit_tests.py
