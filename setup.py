@@ -8,7 +8,12 @@ sourceFileList = [os.path.join(sourceDir, file) for file in os.listdir(sourceDir
     ".c") and not 'main' in file]
     # and not (file == "sampen.c" or file == "run_features.c")]
 
-extra_compile_args = sysconfig.get_config_var('CFLAGS').split()
+cflags = sysconfig.get_config_var('CFLAGS')
+if cflags is not None:
+    extra_compile_args = cflags.split()
+else: # Windows system
+    extra_compile_args = []
+
 extra_compile_args += ["-std=c99"]
 
 # The c++ extension module:

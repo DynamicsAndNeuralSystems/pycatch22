@@ -1,6 +1,12 @@
-# _pycatch22_ - CAnonical Time-series CHaracteristics in python
+<p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
 
-<img src="img/catch22_logo_square.png" width="250" height="250"/>
+<h1 align="center"><em>pycatch22</em>: CAnonical Time-series CHaracteristics in python</h1>
+
+<p align="center">
+    <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
+ 	  <a href="https://twitter.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a>
+</p>
+
 
 ## About
 
@@ -10,8 +16,15 @@ This package provides a python implementation as the module _pycatch22_, license
 
 ### What do the features do?
 
-This [GitBooks website](https://feature-based-time-series-analys.gitbook.io/catch22-features/) is dedicated to describing the features. For code implementation, see the [main _catch22_ repository](https://github.com/DynamicsAndNeuralSystems/catch22).
-There is also information in the paper [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+This [GitBooks website](https://time-series-features.gitbook.io/catch22/feature-descriptions) is dedicated to describing the features.
+For their implementation in code, see the [main _catch22_ repository](https://github.com/DynamicsAndNeuralSystems/catch22).
+There is also information in the associated paper [&#x1F4D7; Lubba et al. (2019).](https://doi.org/10.1007/s10618-019-00647-x).
+
+### Acknowledgement :+1:
+
+If you use this software, please read and cite this open-access article:
+
+- &#x1F4D7; Lubba et al. [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x), _Data Min Knowl Disc_ __33__, 1821 (2019).
 
 ## Installation
 
@@ -39,14 +52,6 @@ mamba install -c conda-forge pycatch22
 
 [A manual install (bottom of this page) is a last resort.]
 
-### Testing
-
-```
-python3 tests/testing.py
-```
-
-If `pycatch22` is installed correctly, this should output results for 24 features for each of two test time series.
-
 ## Usage
 
 Each feature function can be accessed individually and takes arrays as tuple or lists (not `numpy` arrays).
@@ -72,7 +77,7 @@ Usage (computing 24 features: _catch24_ = _catch22_ + mean + standard deviation)
 pycatch22.catch22_all(tsData,catch24=True)
 ```
 
-We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://app.gitbook.com/o/-MfehZqaCWnsSRDIdUG8/s/-MfHFY4lvzOz3IPaA3wm/feature-overview-table)).
+We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
 These short names can be included in the output from `catch22_all()` by setting `short_names=True` as follows:
 
 ```python3
