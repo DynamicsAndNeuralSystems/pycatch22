@@ -50,7 +50,7 @@ def load_expected_outputs():
 def compute_new_features():
     """Computes new feature outputs on same benchmarking dataset and
     then returns dictionary of datasets in the same format as
-    the loaded expected outputs dictionary"""
+    the loaded expected outputs dictionary for direct comparison."""
 
     benchmark_datasets = load_benchmark_datasets()
     datasets = benchmark_datasets.keys()
@@ -60,7 +60,7 @@ def compute_new_features():
         print(f"Computing features for: {dset}...")
         test_data = benchmark_datasets[dset]
         res = catch22.catch22_all(test_data, catch24=True)
-        for (name, val) in zip(res['names'], res['values']):
+        for (name, val) in zip(res['feature'], res['value']):
             dataset_dict_single[name] = float(val)
         dataset_dicts[dset] = dataset_dict_single
 
