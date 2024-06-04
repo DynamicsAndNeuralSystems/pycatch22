@@ -1,6 +1,7 @@
 import catch22_C
+import pandas as pd
 
-def catch22_all(data, catch24=False, short_names=False):
+def catch22_all(data, catch24=False):
     '''
     Extract the catch22 feature set from an input time series.
 
@@ -10,12 +11,10 @@ def catch22_all(data, catch24=False, short_names=False):
         Input time-series data.
     catch24 : bool, optional
         If True, include the two catch24 features (mean and standard deviation) in the output.
-    short_names : bool, optional
-        If True, also include the short names of the features in the output.
 
     '''
 
-    features = [
+    features_hctsa = [
         'DN_HistogramMode_5',
         'DN_HistogramMode_10',
         'CO_f1ecac',
@@ -40,7 +39,7 @@ def catch22_all(data, catch24=False, short_names=False):
         'FC_LocalSimple_mean3_stderr'
     ]
 
-    features_short = [
+    features = [
         'mode_5',
         'mode_10',
         'acf_timescale',
@@ -66,18 +65,18 @@ def catch22_all(data, catch24=False, short_names=False):
     ]
 
     if catch24:
-        features.append('DN_Mean')
-        features.append('DN_Spread_Std')
-        features_short.append('mean')
-        features_short.append('SD')
+        features_hctsa.append('DN_Mean')
+        features_hctsa.append('DN_Spread_Std')
+        features.append('mean')
+        features.append('SD')
 
     data = list(data)
     featureOut = []
-    for f in features:
+    for f in features_hctsa:
         featureFun = getattr(catch22_C, f)
         featureOut.append(featureFun(data))
 
-    if short_names:
-        return {'names': features, 'short_names': features_short, 'values': featureOut}
-    else:
-        return {'names': features, 'values': featureOut}
+    # convert to a dataframe
+    feature_results = pd.DataFrame({'feature': features, 'value': featureOut, 'hctsa_name': features_hctsa})
+
+    return feature_results 
