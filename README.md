@@ -70,7 +70,10 @@ tsData = [1,2,4,3] # (or more interesting data!)
 pycatch22.CO_f1ecac(tsData)
 ```
 
-All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
+All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a DataFrame containing the columns:
+- `feature` for (short) feature names (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
+- `hctsa_name` for (long) feature names as they appear in HCTSA.
+- `value` for feature outputs.
 
 Usage (computing 22 features: _catch22_):
 
@@ -82,13 +85,6 @@ Usage (computing 24 features: _catch24_ = _catch22_ + mean + standard deviation)
 
 ```python3
 pycatch22.catch22_all(tsData,catch24=True)
-```
-
-We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
-These short names can be included in the output from `catch22_all()` by setting `short_names=True` as follows:
-
-```python3
-pycatch22.catch22_all(tsData,catch24=True,short_names=True)
 ```
 
 ### Template analysis script
