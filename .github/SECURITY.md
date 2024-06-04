@@ -14,3 +14,4 @@ currently being supported with security updates.
 | Version | Supported          |
 | ------- | ------------------ |
 | 0.5.0   | :white_check_mark: |
+| 0.4.5   | :white_check_mark: |
