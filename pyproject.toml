@@ -1,6 +1,6 @@
 [project]
 name = "pycatch22"
-version = "0.4.5"
+version = "1.0.0"
 authors = [
     {name = "Carl H Lubba"},
     {email = "carl.lubba@gmx.de"},
@@ -16,6 +16,10 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
+]
+dependencies = [
+    "pandas", 
+    "numpy"
 ]
 
 [project.urls]

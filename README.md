@@ -1,10 +1,17 @@
-<p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
+<p align="center">
+    <picture>
+        <source srcset="img/catch22_logo_square_darkmode.png" media="(prefers-color-scheme: dark)">
+        <img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/>
+    </picture>
+</p>
 
 <h1 align="center"><em>pycatch22</em>: CAnonical Time-series CHaracteristics in python</h1>
 
 <p align="center">
     <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
  	  <a href="https://twitter.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a>
+    <a href="https://github.com/DynamicsAndNeuralSystems/pycatch22/actions/workflows/run_unit_tests.yaml"><img src="https://github.com/DynamicsAndNeuralSystems/pycatch22/actions/workflows/run_unit_tests.yaml/badge.svg?branch=main" height="20"/></a><br>
+    <a href="https://www.python.org"><img src="https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11%20|%203.12-3776AB.svg?style=flat&logo=python&logoColor=white" alt="Python 3.8 | 3.9 | 3.10 | 3.11 | 3.12"></a>
 </p>
 
 
@@ -63,7 +70,10 @@ tsData = [1,2,4,3] # (or more interesting data!)
 pycatch22.CO_f1ecac(tsData)
 ```
 
-All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
+All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a `DataFrame` containing the columns:
+- `feature` for (short) feature names (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
+- `hctsa_name` for (long) feature names as they appear in HCTSA.
+- `value` for feature outputs.
 
 Usage (computing 22 features: _catch22_):
 
@@ -75,13 +85,6 @@ Usage (computing 24 features: _catch24_ = _catch22_ + mean + standard deviation)
 
 ```python3
 pycatch22.catch22_all(tsData,catch24=True)
-```
-
-We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
-These short names can be included in the output from `catch22_all()` by setting `short_names=True` as follows:
-
-```python3
-pycatch22.catch22_all(tsData,catch24=True,short_names=True)
 ```
 
 ### Template analysis script
