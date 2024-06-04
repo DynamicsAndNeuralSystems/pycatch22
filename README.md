@@ -70,7 +70,7 @@ tsData = [1,2,4,3] # (or more interesting data!)
 pycatch22.CO_f1ecac(tsData)
 ```
 
-All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a DataFrame containing the columns:
+All features are bundled in the method `catch22_all`, which also accepts `numpy` arrays and gives back a `DataFrame` containing the columns:
 - `feature` for (short) feature names (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
 - `hctsa_name` for (long) feature names as they appear in HCTSA.
 - `value` for feature outputs.
