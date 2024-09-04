@@ -90,7 +90,7 @@ Thanks to [@jmoo2880](https://github.com/jmoo2880) for putting together a [demon
 
 ### Usage notes
 
-- When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
+- When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results. For example, `first1e_acf_tau` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
 - __Important Note:__ _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
   - From _catch22_ v0.3, If the location and spread of the raw time-series distribution may be important for your application, we suggest applying the function argument `catch24 = True` to your call to the _catch22_ function in the language of your choice.
   This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.

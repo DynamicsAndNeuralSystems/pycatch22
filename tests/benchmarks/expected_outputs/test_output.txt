@@ -1,7 +1,7 @@
 DN_HistogramMode_5, -0.6147991148452683
 DN_HistogramMode_10, -0.7822544655522088
-CO_f1ecac, 32.502605476936466
-CO_FirstMin_ac, 77
+first1e_acf_tau, 32.502605476936466
+firstMin_acf, 77
 CO_HistogramAMI_even_2_5, 1.0063890779937608
 CO_trev_1_num, 1.782472611547055e-05
 MD_hrv_classic_pnn40, 0.31970260223048325

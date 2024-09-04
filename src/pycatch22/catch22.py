@@ -15,6 +15,12 @@ def catch22_all(data, catch24=False, short_names=False):
 
     '''
 
+    # map the old function names to the new long feature names
+    name_mapping = {
+        'CO_f1ecac' : 'first1e_acf_tau',
+        'CO_FirstMin_ac' : 'firstMin_acf'
+    }
+
     features = [
         'DN_HistogramMode_5',
         'DN_HistogramMode_10',
@@ -76,6 +82,8 @@ def catch22_all(data, catch24=False, short_names=False):
     for f in features:
         featureFun = getattr(catch22_C, f)
         featureOut.append(featureFun(data))
+
+    features = [name_mapping.get(s, s) for s in features]
 
     if short_names:
         return {'names': features, 'short_names': features_short, 'values': featureOut}
