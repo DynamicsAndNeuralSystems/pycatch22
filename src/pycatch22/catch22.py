@@ -18,8 +18,8 @@ def catch22_all(data, catch24=False, short_names=False):
     features = [
         'DN_HistogramMode_5',
         'DN_HistogramMode_10',
-        'CO_f1ecac',
-        'CO_FirstMin_ac',
+        'first1e_acf_tau',
+        'firstMin_acf',
         'CO_HistogramAMI_even_2_5',
         'CO_trev_1_num',
         'MD_hrv_classic_pnn40',
