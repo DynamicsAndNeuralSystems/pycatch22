@@ -14,12 +14,17 @@ def catch22_all(data, catch24=False, short_names=False):
         If True, also include the short names of the features in the output.
 
     '''
+   
+    name_mapping = {
+        'CO_f1ecac' : 'first1e_acf_tau',
+        'CO_FirstMin_ac' : 'firstMin_acf'
+    }
 
     features = [
         'DN_HistogramMode_5',
         'DN_HistogramMode_10',
-        'first1e_acf_tau',
-        'firstMin_acf',
+        'CO_f1ecac',
+        'CO_FirstMin_ac',
         'CO_HistogramAMI_even_2_5',
         'CO_trev_1_num',
         'MD_hrv_classic_pnn40',
@@ -77,6 +82,8 @@ def catch22_all(data, catch24=False, short_names=False):
         featureFun = getattr(catch22_C, f)
         featureOut.append(featureFun(data))
 
+    features = [name_mapping.get(s, s) for s in features]
+    
     if short_names:
         return {'names': features, 'short_names': features_short, 'values': featureOut}
     else:
