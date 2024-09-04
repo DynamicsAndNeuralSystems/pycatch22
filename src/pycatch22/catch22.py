@@ -14,7 +14,8 @@ def catch22_all(data, catch24=False, short_names=False):
         If True, also include the short names of the features in the output.
 
     '''
-   
+
+    # map the old function names to the new long feature names
     name_mapping = {
         'CO_f1ecac' : 'first1e_acf_tau',
         'CO_FirstMin_ac' : 'firstMin_acf'
@@ -83,7 +84,7 @@ def catch22_all(data, catch24=False, short_names=False):
         featureOut.append(featureFun(data))
 
     features = [name_mapping.get(s, s) for s in features]
-    
+
     if short_names:
         return {'names': features, 'short_names': features_short, 'values': featureOut}
     else:
