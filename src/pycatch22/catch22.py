@@ -56,12 +56,12 @@ def catch22_all(data, catch24=False, short_names=False):
         'whiten_timescale',
         'outlier_timing_pos',
         'outlier_timing_neg',
-        'centroid_freq',
+        'low_freq_power',
         'stretch_decreasing',
         'entropy_pairs',
         'rs_range',
         'dfa',
-        'low_freq_power',
+        'centroid_freq',
         'forecast_error'
     ]
 
