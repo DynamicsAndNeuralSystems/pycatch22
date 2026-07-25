@@ -31,6 +31,11 @@ double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int
         }
     }
     
+    if(size <= train_length)
+    {
+        return NAN;
+    }
+
     double * res = malloc((size - train_length) * sizeof *res);
     
     for (int i = 0; i < size - train_length; i++)
@@ -66,6 +71,11 @@ double FC_LocalSimple_mean_stderr(const double y[], const int size, const int tr
         }
     }
     
+    if(size <= train_length)
+    {
+        return NAN;
+    }
+
     double * res = malloc((size - train_length) * sizeof *res);
     
     for (int i = 0; i < size - train_length; i++)
@@ -99,6 +109,11 @@ double FC_LocalSimple_mean1_tauresrat(const double y[], const int size){
 
 double FC_LocalSimple_mean_taures(const double y[], const int size, const int train_length)
 {
+    if(size <= train_length)
+    {
+        return NAN;
+    }
+
     double * res = malloc((size - train_length) * sizeof *res);
     
     // first z-score
@@ -129,6 +144,11 @@ double FC_LocalSimple_lfit_taures(const double y[], const int size)
 {
     // set tau from first AC zero crossing
     int train_length = co_firstzero(y, size, size);
+    
+    if(size <= train_length)
+    {
+        return NAN;
+    }
     
     double * xReg = malloc(train_length * sizeof * xReg);
     // double * yReg = malloc(train_length * sizeof * yReg);
