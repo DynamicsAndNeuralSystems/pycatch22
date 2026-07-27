@@ -1,0 +1,3 @@
+[submodule "src/catch22"]
+	path = src/catch22
+	url = https://github.com/DynamicsAndNeuralSystems/catch22.git

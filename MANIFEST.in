@@ -1,1 +1,2 @@
 graft src
+exclude src/catch22/.git

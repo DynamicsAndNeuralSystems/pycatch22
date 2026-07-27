@@ -97,6 +97,14 @@ Thanks to [@jmoo2880](https://github.com/jmoo2880) for putting together a [demon
 
 ### Manual install
 
+The upstream _catch22_ C sources are vendored as a git submodule, so clone with submodules before building from source:
+
+```
+git clone --recurse-submodules https://github.com/DynamicsAndNeuralSystems/pycatch22.git
+```
+
+(If you already cloned without `--recurse-submodules`, run `git submodule update --init` from the repository root.)
+
 If you find issues with the `pip` install, you can also install using `setuptools`:
 
 ```
