@@ -1,4 +1,5 @@
 import pycatch22 as catch22
+import catch22_C
 import pytest
 import numpy as np
 
@@ -97,3 +98,64 @@ def test_individual_feature_methods():
             method(data)
         except Exception as excinfo:
             pytest.fail(f"Method {method.__name__} raised an exception: {excinfo}")
+
+def test_deterministic_output():
+    # the same input must always produce identical feature values
+    tsData = np.random.randn(100)
+    res1 = catch22.catch22_all(tsData, catch24=True)
+    res2 = catch22.catch22_all(tsData, catch24=True)
+    assert res1['names'] == res2['names'], "Feature names differ between identical calls."
+    assert res1['values'] == res2['values'], "Feature values are not deterministic for identical input."
+
+def test_input_types_return_identical_values():
+    # tuple/list/numpy inputs of the same data must give identical values, not just valid structure
+    data_as_list = list(np.random.randn(100))
+    vals_list = catch22.catch22_all(data_as_list, catch24=True)['values']
+    vals_tuple = catch22.catch22_all(tuple(data_as_list), catch24=True)['values']
+    vals_numpy = catch22.catch22_all(np.array(data_as_list), catch24=True)['values']
+    assert vals_list == vals_tuple, "List and tuple inputs produced different feature values."
+    assert vals_list == vals_numpy, "List and numpy inputs produced different feature values."
+
+def test_individual_methods_match_catch22_all():
+    # each per-feature C method should return the same value as its entry in catch22_all
+    data = list(np.random.randn(200))
+    res = catch22.catch22_all(data, catch24=True)
+    for name, val in zip(res['names'], res['values']):
+        individual = getattr(catch22_C, name)(data)
+        if np.isnan(val):
+            assert np.isnan(individual), f"{name}: catch22_all returned NaN but individual method returned {individual}."
+        else:
+            assert individual == val, f"{name}: individual method ({individual}) disagrees with catch22_all ({val})."
+
+def test_catch24_is_superset_of_catch22():
+    # catch24 must be the 22 catch22 features (identical values) plus DN_Mean and DN_Spread_Std
+    data = np.random.randn(100)
+    res22 = catch22.catch22_all(data, catch24=False)
+    res24 = catch22.catch22_all(data, catch24=True)
+    assert res24['names'][:22] == res22['names'], "First 22 catch24 names do not match catch22 names."
+    assert res24['values'][:22] == res22['values'], "First 22 catch24 values do not match catch22 values."
+    assert res24['names'][22:] == ['DN_Mean', 'DN_Spread_Std'], "catch24 did not append DN_Mean and DN_Spread_Std."
+
+def test_catch24_mean_and_std_values():
+    # the two extra catch24 features should equal the sample mean and (ddof=1) standard deviation
+    data = np.random.randn(500)
+    res = catch22.catch22_all(data, catch24=True)
+    values = dict(zip(res['names'], res['values']))
+    assert np.isclose(values['DN_Mean'], np.mean(data)), "DN_Mean does not match numpy mean."
+    assert np.isclose(values['DN_Spread_Std'], np.std(data, ddof=1)), "DN_Spread_Std does not match numpy sample std."
+
+def test_input_not_mutated():
+    # catch22_all should not modify the caller's input array
+    data = np.random.randn(100)
+    data_copy = data.copy()
+    catch22.catch22_all(data, catch24=True)
+    assert np.array_equal(data, data_copy), "Input array was mutated by catch22_all."
+
+def test_constant_time_series():
+    # a flat (zero-variance) series should not crash and should return well-defined mean/std
+    data = [3.0] * 100
+    res = catch22.catch22_all(data, catch24=True)
+    expected_output(res, catch24=True, short_names=False)
+    values = dict(zip(res['names'], res['values']))
+    assert values['DN_Mean'] == 3.0, f"Expected DN_Mean of 3.0 for constant series, got {values['DN_Mean']}."
+    assert values['DN_Spread_Std'] == 0.0, f"Expected DN_Spread_Std of 0.0 for constant series, got {values['DN_Spread_Std']}."
