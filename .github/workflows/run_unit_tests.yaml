@@ -33,4 +33,4 @@ jobs:
           pytest -v ./tests/test_features.py
       - name: Profile performance vs. time series length
         run: |
-          python ./tests/profile_performance.py --min-exp 0 --max-exp 6 --repeats 3
+          python ./tests/profile_performance.py --min-exp 0 --max-exp 5 --repeats 3
