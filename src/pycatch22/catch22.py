@@ -1,6 +1,50 @@
+from collections.abc import Sequence
+from typing import Union
+
+import numpy as np
+
 import catch22_C
 
-def catch22_all(data, catch24=False, short_names=False):
+ArrayLike = Union[Sequence[float], np.ndarray]
+
+# (full name, short name) for each feature, in canonical output order.
+_CATCH22_FEATURES = (
+    ('DN_HistogramMode_5', 'mode_5'),
+    ('DN_HistogramMode_10', 'mode_10'),
+    ('CO_f1ecac', 'acf_timescale'),
+    ('CO_FirstMin_ac', 'acf_first_min'),
+    ('CO_HistogramAMI_even_2_5', 'ami2'),
+    ('CO_trev_1_num', 'trev'),
+    ('MD_hrv_classic_pnn40', 'high_fluctuation'),
+    ('SB_BinaryStats_mean_longstretch1', 'stretch_high'),
+    ('SB_TransitionMatrix_3ac_sumdiagcov', 'transition_matrix'),
+    ('PD_PeriodicityWang_th0_01', 'periodicity'),
+    ('CO_Embed2_Dist_tau_d_expfit_meandiff', 'embedding_dist'),
+    ('IN_AutoMutualInfoStats_40_gaussian_fmmi', 'ami_timescale'),
+    ('FC_LocalSimple_mean1_tauresrat', 'whiten_timescale'),
+    ('DN_OutlierInclude_p_001_mdrmd', 'outlier_timing_pos'),
+    ('DN_OutlierInclude_n_001_mdrmd', 'outlier_timing_neg'),
+    ('SP_Summaries_welch_rect_area_5_1', 'low_freq_power'),
+    ('SB_BinaryStats_diff_longstretch0', 'stretch_decreasing'),
+    ('SB_MotifThree_quantile_hh', 'entropy_pairs'),
+    ('SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1', 'rs_range'),
+    ('SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1', 'dfa'),
+    ('SP_Summaries_welch_rect_centroid', 'centroid_freq'),
+    ('FC_LocalSimple_mean3_stderr', 'forecast_error'),
+)
+
+# The two extra features that promote catch22 to catch24.
+_CATCH24_EXTRA_FEATURES = (
+    ('DN_Mean', 'mean'),
+    ('DN_Spread_Std', 'SD'),
+)
+
+
+def catch22_all(
+    data: ArrayLike,
+    catch24: bool = False,
+    short_names: bool = False,
+) -> dict[str, list]:
     '''
     Extract the catch22 feature set from an input time series.
 
@@ -15,69 +59,14 @@ def catch22_all(data, catch24=False, short_names=False):
 
     '''
 
-    features = [
-        'DN_HistogramMode_5',
-        'DN_HistogramMode_10',
-        'CO_f1ecac',
-        'CO_FirstMin_ac',
-        'CO_HistogramAMI_even_2_5',
-        'CO_trev_1_num',
-        'MD_hrv_classic_pnn40',
-        'SB_BinaryStats_mean_longstretch1',
-        'SB_TransitionMatrix_3ac_sumdiagcov',
-        'PD_PeriodicityWang_th0_01',
-        'CO_Embed2_Dist_tau_d_expfit_meandiff',
-        'IN_AutoMutualInfoStats_40_gaussian_fmmi',
-        'FC_LocalSimple_mean1_tauresrat',
-        'DN_OutlierInclude_p_001_mdrmd',
-        'DN_OutlierInclude_n_001_mdrmd',
-        'SP_Summaries_welch_rect_area_5_1',
-        'SB_BinaryStats_diff_longstretch0',
-        'SB_MotifThree_quantile_hh',
-        'SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1',
-        'SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1',
-        'SP_Summaries_welch_rect_centroid',
-        'FC_LocalSimple_mean3_stderr'
-    ]
-
-    features_short = [
-        'mode_5',
-        'mode_10',
-        'acf_timescale',
-        'acf_first_min',
-        'ami2',
-        'trev',
-        'high_fluctuation',
-        'stretch_high',
-        'transition_matrix',
-        'periodicity',
-        'embedding_dist',
-        'ami_timescale',
-        'whiten_timescale',
-        'outlier_timing_pos',
-        'outlier_timing_neg',
-        'low_freq_power',
-        'stretch_decreasing',
-        'entropy_pairs',
-        'rs_range',
-        'dfa',
-        'centroid_freq',
-        'forecast_error'
-    ]
-
-    if catch24:
-        features.append('DN_Mean')
-        features.append('DN_Spread_Std')
-        features_short.append('mean')
-        features_short.append('SD')
+    feature_set = _CATCH22_FEATURES + _CATCH24_EXTRA_FEATURES if catch24 else _CATCH22_FEATURES
 
     data = list(data)
-    featureOut = []
-    for f in features:
-        featureFun = getattr(catch22_C, f)
-        featureOut.append(featureFun(data))
+    names = [name for name, _ in feature_set]
+    values = [getattr(catch22_C, name)(data) for name in names]
 
+    output = {'names': names, 'values': values}
     if short_names:
-        return {'names': features, 'short_names': features_short, 'values': featureOut}
-    else:
-        return {'names': features, 'values': featureOut}
+        output['short_names'] = [short for _, short in feature_set]
+
+    return output
