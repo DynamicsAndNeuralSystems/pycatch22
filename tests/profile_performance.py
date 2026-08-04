@@ -18,41 +18,21 @@ EMPIRICAL_DIR = os.path.join(
     "src", "catch22", "testData", "empirical",
 )
 
-def generate_ar1(n_samples, phi=0.9, sigma=1.0, x0=None, random_state=None):
-    if not (-1 < phi < 1):
-        raise ValueError("For a stationary AR(1) process, phi must be between -1 and 1.")
-
-    rng = np.random.default_rng(random_state)
-
-    x = np.zeros(n_samples)
-
-    # stationary initialization
-    if x0 is None:
-        x[0] = rng.normal(0, sigma / np.sqrt(1 - phi**2))
-    else:
-        x[0] = x0
-
-    noise = rng.normal(0, sigma, size=n_samples)
-
-    for t in range(1, n_samples):
-        x[t] = phi * x[t-1] + noise[t]
-
-    return x
 
 def profile(lengths, repeats, catch24=True, seed=0):
+    """Return a list of (length, mean_seconds, std_seconds) tuples."""
+    rng = np.random.default_rng(seed)
     results = []
-    all_timings = []
     for n in lengths:
-        data = generate_ar1(n, random_state=seed)
+        data = rng.standard_normal(n).tolist()
         timings = []
         for _ in range(repeats):
             start = time.perf_counter()
             catch22.catch22_all(data, catch24=catch24)
             timings.append(time.perf_counter() - start)
         timings = np.asarray(timings)
-        all_timings.append(timings)
         results.append((n, float(timings.mean()), float(timings.std())))
-    return results, np.asarray(all_timings)
+    return results
 
 def run_empirical_test(catch24=True, data_dir=EMPIRICAL_DIR, repeats=0):
     """Run catch22_all on every empirical time series and report the total time.
@@ -91,10 +71,8 @@ def main():
                         help="profile catch24 (includes mean and std)")
     args = parser.parse_args()
 
-    lengths = np.logspace(args.min_exp, args.max_exp, 15).astype(int)
-
-    results, all_timings = profile(lengths, args.repeats, catch24=args.catch24)
-    results = np.asarray(results)
+    lengths = [10 ** e for e in range(args.min_exp, args.max_exp + 1)]
+    results = profile(lengths, args.repeats, catch24=args.catch24)
 
     print(f"{'length':>10} {'mean (s)':>14} {'std (s)':>14}")
     for n, mean, std in results:
