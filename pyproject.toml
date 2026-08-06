@@ -1,6 +1,6 @@
 [project]
 name = "pycatch22"
-version = "0.4.5"
+version = "0.5.0"
 authors = [
     {name = "Carl H Lubba"},
     {email = "carl.lubba@gmx.de"},
