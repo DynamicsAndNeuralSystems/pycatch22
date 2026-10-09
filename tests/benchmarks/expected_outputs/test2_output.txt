@@ -5,7 +5,7 @@ CO_FirstMin_ac, 77
 CO_HistogramAMI_even_2_5, 1.0063890779937608
 CO_trev_1_num, 1.782472611547055e-05
 MD_hrv_classic_pnn40, 0.31970260223048325
-SB_BinaryStats_mean_longstretch1, 88.0
+SB_BinaryStats_mean_longstretch1, 87
 SB_TransitionMatrix_3ac_sumdiagcov, 0.08000000000000003
 PD_PeriodicityWang_th0_01, 0
 CO_Embed2_Dist_tau_d_expfit_meandiff, 7.135078608788558
