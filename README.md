@@ -98,7 +98,7 @@ Thanks to [@jmoo2880](https://github.com/jmoo2880) for putting together a [demon
 ### Usage notes
 
 - When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results.
-- **From _pycatch22_ v1.0** (which uses [_catch22_ v1.0.0](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.0.0)), every feature exactly reproduces its definition in _hctsa_ v3.0.0, so values change for most features.
+- **From _pycatch22_ v1.0** (which uses [_catch22_ v1.0.1](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.0.1)), every feature exactly reproduces its definition in _hctsa_ v3.0.0, so values change for most features.
   Several features are renamed (e.g., `CO_f1ecac` is now `CO_FirstCrossing_acf_1e_pointOfCrossing`, and `centroid_freq` is replaced by the median frequency, `median_freq`); the old function names still work but are deprecated.
   Features that cannot be estimated are masked by default rather than returning `NaN`, all values are floats, and the features are returned in the order of _catch22_'s `featureList.txt`.
   See the [_catch22_ v1.0.0 release notes](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.0.0) for details.
