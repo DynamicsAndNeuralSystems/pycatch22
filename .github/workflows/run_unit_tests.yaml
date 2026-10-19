@@ -22,9 +22,13 @@ jobs:
       - name: Install pycatch22
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
-          pip install numpy
           pip install .
+      - name: Check pycatch22 works without numpy
+        run: |
+          python -c "import pycatch22; print(pycatch22.catch22_all([1.0, 3.0, 2.0, 5.0, 4.0, 6.0, 5.0, 7.0, 6.0, 8.0])['values'][0])"
+      - name: Install test dependencies
+        run: |
+          pip install pytest numpy
       - name: Run basic unit tests
         run: |
           pytest -v ./tests/unit_tests.py

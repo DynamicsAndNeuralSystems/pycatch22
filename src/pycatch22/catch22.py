@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import Sequence, Union
-
-import numpy as np
+from typing import TYPE_CHECKING, Sequence, Union
 
 import catch22_C
 
-ArrayLike = Union[Sequence[float], np.ndarray]
+# numpy is only needed for the type hint, so pycatch22 has no runtime dependencies
+if TYPE_CHECKING:
+    import numpy as np
+
+    ArrayLike = Union[Sequence[float], np.ndarray]
 
 # (full name, short name) for each feature, in canonical output order.
 _CATCH22_FEATURES = (
@@ -18,7 +20,7 @@ _CATCH22_FEATURES = (
     ('CO_trev_1_num', 'trev'),
     ('MD_hrv_classic_pnn40', 'high_fluctuation'),
     ('SB_BinaryStats_mean_longstretch1', 'stretch_high'),
-    ('SB_TransitionMatrix_3ac_sumdiagcov', 'transition_matrix'),
+    ('SB_TransitionMatrix_3ac_sumdiagcov', 'transition_variance'),
     ('PD_PeriodicityWang_th0_01', 'periodicity'),
     ('CO_Embed2_Dist_tau_d_expfit_meandiff', 'embedding_dist'),
     ('IN_AutoMutualInfoStats_40_gaussian_fmmi', 'ami_timescale'),
@@ -37,7 +39,7 @@ _CATCH22_FEATURES = (
 # The two extra features that promote catch22 to catch24.
 _CATCH24_EXTRA_FEATURES = (
     ('DN_Mean', 'mean'),
-    ('DN_Spread_Std', 'SD'),
+    ('DN_Spread_Std', 'std'),
 )
 
 
