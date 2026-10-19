@@ -1,3 +1,4 @@
+import os
 import pycatch22 as catch22
 import catch22_C
 import pytest
@@ -159,3 +160,45 @@ def test_constant_time_series():
     values = dict(zip(res['names'], res['values']))
     assert values['DN_Mean'] == 3.0, f"Expected DN_Mean of 3.0 for constant series, got {values['DN_Mean']}."
     assert values['DN_Spread_Std'] == 0.0, f"Expected DN_Spread_Std of 0.0 for constant series, got {values['DN_Spread_Std']}."
+
+def test_individual_methods_accept_any_sequence():
+    # each per-feature C method should accept numpy arrays, tuples and ranges, giving the same value as a list
+    data = np.random.randn(100)
+    for name in catch22.catch22_all(data, catch24=True)['names']:
+        method = getattr(catch22_C, name)
+        val_list = method(list(data))
+        for other in (data, tuple(data)):
+            val = method(other)
+            assert val == val_list or (np.isnan(val) and np.isnan(val_list)), f"{name}: {type(other).__name__} input gave {val}, list gave {val_list}."
+    assert catch22_C.CO_FirstMin_ac(range(10)) == catch22_C.CO_FirstMin_ac(list(range(10)))
+
+def test_invalid_input_raises_type_error():
+    # non-sequence input or non-numeric values should raise a clear TypeError (not a SystemError)
+    for bad_input in (None, 3.0, [1.0, 'a', 3.0]):
+        with pytest.raises(TypeError):
+            catch22_C.CO_f1ecac(bad_input)
+        with pytest.raises(TypeError):
+            catch22_C.CO_FirstMin_ac(bad_input)
+        with pytest.raises(TypeError):
+            catch22.catch22_all(bad_input)
+
+def test_integer_features_return_int():
+    # features that return a lag are returned as Python ints
+    data = list(np.sin(np.arange(200) * 2 * np.pi / 20))
+    assert isinstance(catch22_C.CO_FirstMin_ac(data), int)
+    assert isinstance(catch22_C.PD_PeriodicityWang_th0_01(data), int)
+
+def test_short_names_match_upstream_feature_list():
+    # short names must match catch22's featureList.txt (in the catch22 submodule)
+    feature_list = os.path.join(os.path.dirname(__file__), '..', 'src', 'catch22', 'featureList.txt')
+    if not os.path.exists(feature_list):
+        pytest.skip("catch22 submodule not checked out")
+    upstream = {}
+    with open(feature_list) as f:
+        for line in f:
+            parts = line.split()
+            if len(parts) == 2 and not line.startswith('#'):
+                upstream[parts[0]] = parts[1]
+    res = catch22.catch22_all(np.random.randn(100), catch24=True, short_names=True)
+    for name, short in zip(res['names'], res['short_names']):
+        assert upstream.get(name) == short, f"{name}: short name '{short}' differs from featureList.txt ('{upstream.get(name)}')."
