@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Sequence, Union
+import warnings
+from typing import TYPE_CHECKING, Callable, Sequence, Union
 
 import catch22_C
 
@@ -10,43 +11,20 @@ if TYPE_CHECKING:
 
     ArrayLike = Union[Sequence[float], np.ndarray]
 
-# (full name, short name) for each feature, in canonical output order.
-_CATCH22_FEATURES = (
-    ('DN_HistogramMode_5', 'mode_5'),
-    ('DN_HistogramMode_10', 'mode_10'),
-    ('CO_f1ecac', 'acf_timescale'),
-    ('CO_FirstMin_ac', 'acf_first_min'),
-    ('CO_HistogramAMI_even_2_5', 'ami2'),
-    ('CO_trev_1_num', 'trev'),
-    ('MD_hrv_classic_pnn40', 'high_fluctuation'),
-    ('SB_BinaryStats_mean_longstretch1', 'stretch_high'),
-    ('SB_TransitionMatrix_3ac_sumdiagcov', 'transition_variance'),
-    ('PD_PeriodicityWang_th0_01', 'periodicity'),
-    ('CO_Embed2_Dist_tau_d_expfit_meandiff', 'embedding_dist'),
-    ('IN_AutoMutualInfoStats_40_gaussian_fmmi', 'ami_timescale'),
-    ('FC_LocalSimple_mean1_tauresrat', 'whiten_timescale'),
-    ('DN_OutlierInclude_p_001_mdrmd', 'outlier_timing_pos'),
-    ('DN_OutlierInclude_n_001_mdrmd', 'outlier_timing_neg'),
-    ('SP_Summaries_welch_rect_area_5_1', 'low_freq_power'),
-    ('SB_BinaryStats_diff_longstretch0', 'stretch_decreasing'),
-    ('SB_MotifThree_quantile_hh', 'entropy_pairs'),
-    ('SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1', 'rs_range'),
-    ('SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1', 'dfa'),
-    ('SP_Summaries_welch_rect_centroid', 'centroid_freq'),
-    ('FC_LocalSimple_mean3_stderr', 'forecast_error'),
-)
-
-# The two extra features that promote catch22 to catch24.
-_CATCH24_EXTRA_FEATURES = (
-    ('DN_Mean', 'mean'),
-    ('DN_Spread_Std', 'std'),
-)
+# (name, short name, name before v1.0, hctsa call) for each feature, in output
+# order, from the C library (so the names always match catch22's)
+_CATCH24_FEATURES = tuple(catch22_C.features(True))
+_N_CATCH22 = len(catch22_C.features(False))
+# each feature's index, by its long and short names
+_INDEX_BY_NAME = {name: i for i, f in enumerate(_CATCH24_FEATURES) for name in f[:2]}
 
 
 def catch22_all(
     data: ArrayLike,
     catch24: bool = False,
     short_names: bool = False,
+    mask_nans: bool = True,
+    return_masked: bool = False,
 ) -> dict[str, list]:
     '''
     Extract the catch22 feature set from an input time series.
@@ -59,17 +37,101 @@ def catch22_all(
         If True, include the two catch24 features (mean and standard deviation) in the output.
     short_names : bool, optional
         If True, also include the short names of the features in the output.
+    mask_nans : bool, optional
+        If True (default), a feature that cannot be estimated (e.g., for a constant or very
+        short time series) is set to a fixed value at the appropriate end of its range, so that
+        real numbers are always returned. If False, it is NaN. A time series containing NaN or
+        Inf gives NaN for every feature either way.
+    return_masked : bool, optional
+        If True, also include 'masked': for each feature, whether its value was masked.
 
+    Returns
+    -------
+    dict
+        'names' (the feature names) and 'values' (floats), plus 'short_names' and 'masked'
+        if requested.
     '''
 
-    feature_set = _CATCH22_FEATURES + _CATCH24_EXTRA_FEATURES if catch24 else _CATCH22_FEATURES
+    values, masked, ok = catch22_C.compute(data, catch24, mask_nans)
+    if not ok:
+        warnings.warn("the time series is empty or contains NaN/Inf; all features are NaN",
+                      RuntimeWarning, stacklevel=2)
 
-    data = list(data)
-    names = [name for name, _ in feature_set]
-    values = [getattr(catch22_C, name)(data) for name in names]
-
-    output = {'names': names, 'values': values}
+    features = _CATCH24_FEATURES[:len(values)]
+    output = {'names': [f[0] for f in features], 'values': values}
     if short_names:
-        output['short_names'] = [short for _, short in feature_set]
+        output['short_names'] = [f[1] for f in features]
+    if return_masked:
+        output['masked'] = masked
 
     return output
+
+
+def compute_feature(data: ArrayLike, name: str, mask_nans: bool = True) -> float:
+    '''
+    Compute a single feature of a time series, by its long or short name.
+
+    Gives exactly the value that catch22_all gives for the feature, but computes only that
+    feature. E.g., compute_feature(x, 'trev') or compute_feature(x, 'CO_trev_1_num').
+
+    Parameters
+    ----------
+    data : array_like
+        Input time-series data.
+    name : str
+        The feature's long or short name (as in feature_table(catch24=True)).
+    mask_nans : bool, optional
+        As for catch22_all.
+    '''
+    if name not in _INDEX_BY_NAME:
+        raise ValueError(f"no catch22 feature named {name!r}; see feature_table(catch24=True)")
+    return FEATURE_FUNCTIONS[_CATCH24_FEATURES[_INDEX_BY_NAME[name]][0]](data, mask_nans)
+
+
+def feature_table(catch24: bool = False) -> list[dict[str, str]]:
+    '''
+    Describe the features, in the order of catch22_all.
+
+    Each feature has its 'name', 'short_name', 'legacy_name' (its name in catch22 v0.x;
+    definitions have since changed to match hctsa, so values differ) and 'hctsa_call' (the
+    hctsa v3.0.0 call that reproduces it exactly, on x_z, the z-scored series, or x, the raw
+    series).
+    '''
+    keys = ('name', 'short_name', 'legacy_name', 'hctsa_call')
+    n = len(_CATCH24_FEATURES) if catch24 else _N_CATCH22
+    return [dict(zip(keys, f)) for f in _CATCH24_FEATURES[:n]]
+
+
+def _single_feature(index: int, name: str) -> Callable[..., float]:
+    def compute(data: ArrayLike, mask_nans: bool = True) -> float:
+        value, _, ok = catch22_C.compute_feature(data, index, mask_nans)
+        if not ok:
+            warnings.warn("the time series is empty or contains NaN/Inf; the feature is NaN",
+                          RuntimeWarning, stacklevel=2)
+        return value
+    compute.__name__ = compute.__qualname__ = name
+    compute.__doc__ = (f"Compute {name} ({_CATCH24_FEATURES[index][1]}) of a time series, "
+                       f"exactly as catch22_all does (with the same mask_nans option).")
+    return compute
+
+
+def _deprecated_alias(name: str, legacy_name: str, function: Callable[..., float]) -> Callable[..., float]:
+    def compute(data: ArrayLike, mask_nans: bool = True) -> float:
+        warnings.warn(f"{legacy_name} is now {name} (catch22 v1.0, which also changed its "
+                      f"definition to match hctsa)", DeprecationWarning, stacklevel=2)
+        return function(data, mask_nans)
+    compute.__name__ = compute.__qualname__ = legacy_name
+    compute.__doc__ = f"Deprecated name for {name}."
+    return compute
+
+
+# One function per feature, by its name (e.g., pycatch22.DN_HistogramMode_5(data)), and
+# by its name before v1.0 where that differs (deprecated)
+FEATURE_FUNCTIONS = {}
+_LEGACY_FUNCTIONS = {}
+for _i, (_name, _short, _legacy, _call) in enumerate(_CATCH24_FEATURES):
+    FEATURE_FUNCTIONS[_name] = _single_feature(_i, _name)
+    if _legacy != _name:
+        _LEGACY_FUNCTIONS[_legacy] = _deprecated_alias(_name, _legacy, FEATURE_FUNCTIONS[_name])
+globals().update(FEATURE_FUNCTIONS)
+globals().update(_LEGACY_FUNCTIONS)

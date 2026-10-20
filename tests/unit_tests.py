@@ -1,204 +1,182 @@
+import math
 import os
-import pycatch22 as catch22
-import catch22_C
-import pytest
+import warnings
+
 import numpy as np
+import pytest
+
+import pycatch22 as catch22
+
 
 # unit tests
-def expected_output(res, catch24=False, short_names=False):
+def expected_output(res, catch24=False, short_names=False, return_masked=False):
     which_set = "Catch24" if catch24 else "Catch22"
     num_features = 24 if catch24 else 22
-    # check if the output is a dictionary
-    assert isinstance(res, dict), f"{which_set} did not return a dictionary. Unexpected output."
-    # check if the dictionary has two keys - names and values
+    assert isinstance(res, dict), f"{which_set} did not return a dictionary."
+    expected_keys = {'names', 'values'} | ({'short_names'} if short_names else set()) | ({'masked'} if return_masked else set())
+    assert set(res.keys()) == expected_keys, f"{which_set} returned keys {sorted(res.keys())}, expected {sorted(expected_keys)}."
+    for key in expected_keys:
+        assert isinstance(res[key], list), f"{which_set}: '{key}' is not a list."
+        assert len(res[key]) == num_features, f"{which_set}: expected {num_features} entries in '{key}', got {len(res[key])}."
+    assert all(isinstance(name, str) for name in res['names'])
+    assert all(isinstance(val, float) for val in res['values']), f"{which_set} expected all feature values to be floats."
     if short_names:
-        dict_length = len(res)
-        assert dict_length == 3, f"{which_set} returned a dictionary of length {dict_length}. Expected length 3 for short_names = true"
-        assert all(key in ['names', 'short_names', 'values'] for key in res.keys()), f"{which_set} returned unexpected keys for short_names = True"
-
-        # check the short names list
-        assert all(isinstance(name, str) for name in res['short_names']), f"{which_set} expected all returned short names to be strings."
-        length_of_names = len(res['short_names'])
-        assert length_of_names == num_features, f"Expected {num_features} short names for {which_set}, got {length_of_names} instead."
-
-    else:
-        assert len(res) == 2, f"{which_set} returned an unexpected dictionary size."
-        # check if the keys are 'names' and 'values'
-        assert all(key in ['names', 'values'] for key in res.keys()), f"{which_set} returned unexpected keys."
-
-    # check the 'names' list
-    assert isinstance(res['names'], list), f"{which_set} expected list of names (str), got unexpected output."
-    length_of_names = len(res['names'])
-    assert length_of_names == num_features, f"Expected {num_features} names for {which_set}, got {length_of_names} instead."
-    assert all(isinstance(name, str) for name in res['names']), f"{which_set} expected all returned names to be strings."
-
-    # check the 'values' list
-    assert isinstance(res['values'], list), f"{which_set} expected list of values, got unexpected output."
-    length_of_vals = len(res['values'])
-    assert length_of_vals == num_features, f"Expected {num_features} values for {which_set}, got {length_of_vals} instead."
-    assert all(isinstance(val, (float, int)) for val in res['values']), f"{which_set} expected all returned feature values to be floats or integers."
+        assert all(isinstance(name, str) for name in res['short_names'])
+    if return_masked:
+        assert all(isinstance(m, bool) for m in res['masked'])
 
 def test_catch22_runs():
-    # test whether catch22 works on some random data
-    tsData = np.random.randn(100)
-    res = catch22.catch22_all(tsData, catch24=False, short_names=False)
-    expected_output(res, catch24=False, short_names=False)
+    res = catch22.catch22_all(np.random.randn(100))
+    expected_output(res)
 
 def test_catch24_runs():
-    # test whether catch24 works on some random data
-    tsData = np.random.randn(100)
-    res = catch22.catch22_all(tsData, catch24=True, short_names=False)
-    expected_output(res, catch24=True, short_names=False)
-   
-def test_short_names_returned():
-    # test whether catch22/catch24 returns short names
-    tsData = np.random.randn(100)
-    res = catch22.catch22_all(tsData, catch24=False, short_names=True)
-    expected_output(res, catch24=False, short_names=True)
-    res2 = catch22.catch22_all(tsData, catch24=True, short_names=True)
-    expected_output(res2, catch24=True, short_names=True)
+    res = catch22.catch22_all(np.random.randn(100), catch24=True)
+    expected_output(res, catch24=True)
+
+def test_optional_outputs():
+    data = np.random.randn(100)
+    for catch24 in (False, True):
+        expected_output(catch22.catch22_all(data, catch24=catch24, short_names=True), catch24=catch24, short_names=True)
+        expected_output(catch22.catch22_all(data, catch24=catch24, return_masked=True), catch24=catch24, return_masked=True)
 
 def test_valid_input_types():
-    # should accept tuples, arrays and lists
-    data_as_tuple = (1, 2, 3, 4, 5, 6, 7, 8)
-    res_tuple = catch22.catch22_all(data_as_tuple)
-    expected_output(res_tuple)
-    data_as_list = [1, 2, 3, 4, 5, 6, 7, 8]
-    res_list = catch22.catch22_all(data_as_list)
-    expected_output(res_list)
-    data_as_numpy = np.array(data_as_list)
-    res_numpy = catch22.catch22_all(data_as_numpy)
-    expected_output(res_numpy)
+    # tuples, lists, numpy arrays and ranges all work, and give identical values
+    data = list(np.random.randn(100))
+    vals = catch22.catch22_all(data, catch24=True)['values']
+    assert catch22.catch22_all(tuple(data), catch24=True)['values'] == vals
+    assert catch22.catch22_all(np.array(data), catch24=True)['values'] == vals
+    expected_output(catch22.catch22_all(range(50)))
 
 def test_inf_and_nan_input():
-    # pass in time series containing a NaN/inf, should return 0 (0.0) or NaN/inf outputs depending on feature
-    zero_outputs = [2, 3, 9] # indexes of features with expected 0 or 0.0 output
-    test_vals = [np.nan, np.inf, -np.inf]
-    for val_type in test_vals:
-        base_data = np.random.randn(100)
-        base_data[0] = val_type
-        res = catch22.catch22_all(base_data, catch24=False)
-        expected_output(res, catch24=False, short_names=False)
-        res_values = res['values']
-        for i, val in enumerate(res_values):
-            if i in zero_outputs:
-                # check that value is 0 or 0.0
-                assert val == 0 or val == 0.0, f"Expected 0 or 0.0 for feature {i+1} when passing ts containing {val_type}, got {val} instead."
-            else:
-                assert np.isnan(val), f"Expected NaN for feature {i+1} when testing ts containing {val_type}, got {val}."
-        
-def test_individual_feature_methods():
-    # ensure each indiviudal feature method can be run in isolation
-    all_methods = dir(catch22)
-    data = list(np.random.randn(100))
-    methods = [getattr(catch22, method) for method in all_methods if callable(getattr(catch22, method))]
-    methods = methods[:-1]
-    assert len(methods) == 24, "Expected 24 individual feature methods."
-    for method in methods:
-        try:
-            method(data)
-        except Exception as excinfo:
-            pytest.fail(f"Method {method.__name__} raised an exception: {excinfo}")
+    # a time series containing NaN or Inf gives NaN for every feature (never masked), with a warning
+    for bad_value in (np.nan, np.inf, -np.inf):
+        data = np.random.randn(100)
+        data[0] = bad_value
+        with pytest.warns(RuntimeWarning):
+            res = catch22.catch22_all(data, catch24=True, return_masked=True)
+        expected_output(res, catch24=True, return_masked=True)
+        assert all(math.isnan(v) for v in res['values']), f"Expected all NaN for a series containing {bad_value}."
+        assert not any(res['masked'])
+
+def test_constant_series_is_masked():
+    # a constant series cannot be z-scored: masked values by default, NaN without masking
+    data = [3.0] * 100
+    res = catch22.catch22_all(data, catch24=True, return_masked=True)
+    values = dict(zip(res['names'], res['values']))
+    assert res['masked'][:22] == [True] * 22 and res['masked'][22:] == [False, False]
+    assert not any(math.isnan(v) for v in res['values'])
+    assert values['DN_mean'] == 3.0 and values['DN_Spread_std'] == 0.0
+    res = catch22.catch22_all(data, catch24=True, mask_nans=False)
+    assert all(math.isnan(v) for v in res['values'][:22])
+
+def test_masking_only_replaces_nans():
+    # on a series where every feature can be estimated, masking changes nothing
+    data = np.random.randn(500)
+    res = catch22.catch22_all(data, catch24=True, return_masked=True)
+    assert not any(res['masked'])
+    assert res['values'] == catch22.catch22_all(data, catch24=True, mask_nans=False)['values']
+
+def test_short_series_masked_features():
+    # dfa needs at least 79 samples (as in hctsa): masked below that, NaN without masking
+    data = np.random.randn(60)
+    res = catch22.catch22_all(data, return_masked=True)
+    i = res['names'].index('SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1')
+    assert res['masked'][i]
+    assert math.isnan(catch22.catch22_all(data, mask_nans=False)['values'][i])
 
 def test_deterministic_output():
-    # the same input must always produce identical feature values
-    tsData = np.random.randn(100)
-    res1 = catch22.catch22_all(tsData, catch24=True)
-    res2 = catch22.catch22_all(tsData, catch24=True)
-    assert res1['names'] == res2['names'], "Feature names differ between identical calls."
-    assert res1['values'] == res2['values'], "Feature values are not deterministic for identical input."
-
-def test_input_types_return_identical_values():
-    # tuple/list/numpy inputs of the same data must give identical values, not just valid structure
-    data_as_list = list(np.random.randn(100))
-    vals_list = catch22.catch22_all(data_as_list, catch24=True)['values']
-    vals_tuple = catch22.catch22_all(tuple(data_as_list), catch24=True)['values']
-    vals_numpy = catch22.catch22_all(np.array(data_as_list), catch24=True)['values']
-    assert vals_list == vals_tuple, "List and tuple inputs produced different feature values."
-    assert vals_list == vals_numpy, "List and numpy inputs produced different feature values."
-
-def test_individual_methods_match_catch22_all():
-    # each per-feature C method should return the same value as its entry in catch22_all
-    data = list(np.random.randn(200))
-    res = catch22.catch22_all(data, catch24=True)
-    for name, val in zip(res['names'], res['values']):
-        individual = getattr(catch22_C, name)(data)
-        if np.isnan(val):
-            assert np.isnan(individual), f"{name}: catch22_all returned NaN but individual method returned {individual}."
-        else:
-            assert individual == val, f"{name}: individual method ({individual}) disagrees with catch22_all ({val})."
-
-def test_catch24_is_superset_of_catch22():
-    # catch24 must be the 22 catch22 features (identical values) plus DN_Mean and DN_Spread_Std
     data = np.random.randn(100)
-    res22 = catch22.catch22_all(data, catch24=False)
-    res24 = catch22.catch22_all(data, catch24=True)
-    assert res24['names'][:22] == res22['names'], "First 22 catch24 names do not match catch22 names."
-    assert res24['values'][:22] == res22['values'], "First 22 catch24 values do not match catch22 values."
-    assert res24['names'][22:] == ['DN_Mean', 'DN_Spread_Std'], "catch24 did not append DN_Mean and DN_Spread_Std."
-
-def test_catch24_mean_and_std_values():
-    # the two extra catch24 features should equal the sample mean and (ddof=1) standard deviation
-    data = np.random.randn(500)
-    res = catch22.catch22_all(data, catch24=True)
-    values = dict(zip(res['names'], res['values']))
-    assert np.isclose(values['DN_Mean'], np.mean(data)), "DN_Mean does not match numpy mean."
-    assert np.isclose(values['DN_Spread_Std'], np.std(data, ddof=1)), "DN_Spread_Std does not match numpy sample std."
+    assert catch22.catch22_all(data, catch24=True) == catch22.catch22_all(data, catch24=True)
 
 def test_input_not_mutated():
-    # catch22_all should not modify the caller's input array
     data = np.random.randn(100)
     data_copy = data.copy()
     catch22.catch22_all(data, catch24=True)
-    assert np.array_equal(data, data_copy), "Input array was mutated by catch22_all."
+    assert np.array_equal(data, data_copy)
 
-def test_constant_time_series():
-    # a flat (zero-variance) series should not crash and should return well-defined mean/std
-    data = [3.0] * 100
-    res = catch22.catch22_all(data, catch24=True)
-    expected_output(res, catch24=True, short_names=False)
-    values = dict(zip(res['names'], res['values']))
-    assert values['DN_Mean'] == 3.0, f"Expected DN_Mean of 3.0 for constant series, got {values['DN_Mean']}."
-    assert values['DN_Spread_Std'] == 0.0, f"Expected DN_Spread_Std of 0.0 for constant series, got {values['DN_Spread_Std']}."
-
-def test_individual_methods_accept_any_sequence():
-    # each per-feature C method should accept numpy arrays, tuples and ranges, giving the same value as a list
+def test_catch24_is_superset_of_catch22():
     data = np.random.randn(100)
-    for name in catch22.catch22_all(data, catch24=True)['names']:
-        method = getattr(catch22_C, name)
-        val_list = method(list(data))
-        for other in (data, tuple(data)):
-            val = method(other)
-            assert val == val_list or (np.isnan(val) and np.isnan(val_list)), f"{name}: {type(other).__name__} input gave {val}, list gave {val_list}."
-    assert catch22_C.CO_FirstMin_ac(range(10)) == catch22_C.CO_FirstMin_ac(list(range(10)))
+    res22 = catch22.catch22_all(data)
+    res24 = catch22.catch22_all(data, catch24=True)
+    assert res24['names'][:22] == res22['names']
+    assert res24['values'][:22] == res22['values']
+    assert res24['names'][22:] == ['DN_mean', 'DN_Spread_std']
+
+def test_catch24_mean_and_std_values():
+    data = np.random.randn(500)
+    values = dict(zip(*catch22.catch22_all(data, catch24=True).values()))
+    assert np.isclose(values['DN_mean'], np.mean(data))
+    assert np.isclose(values['DN_Spread_std'], np.std(data, ddof=1))
+
+def test_individual_feature_functions():
+    # one function per feature, named as in catch22_all, giving the same value
+    data = list(np.random.randn(200))
+    res = catch22.catch22_all(data, catch24=True)
+    assert set(res['names']) <= set(catch22.__all__)
+    for name, val in zip(res['names'], res['values']):
+        individual = getattr(catch22, name)(data)
+        assert individual == val or (math.isnan(val) and math.isnan(individual)), f"{name}: {individual} vs catch22_all {val}."
+        assert getattr(catch22, name)(np.array(data)) == individual
+
+def test_individual_feature_functions_on_edge_cases():
+    # same values as catch22_all where features are masked (or NaN without masking)
+    for data in ([3.0] * 50, list(np.random.randn(60)), [2.0]):
+        for mask_nans in (True, False):
+            res = catch22.catch22_all(data, catch24=True, mask_nans=mask_nans)
+            for name, val in zip(res['names'], res['values']):
+                individual = getattr(catch22, name)(data, mask_nans=mask_nans)
+                assert individual == val or (math.isnan(val) and math.isnan(individual)), f"{name}: {individual} vs catch22_all {val}."
+    with pytest.warns(RuntimeWarning):
+        assert math.isnan(catch22.CO_trev_1_num([1.0, np.nan, 2.0]))
+
+def test_compute_feature_by_name():
+    # by long or short name, the same value as catch22_all
+    data = list(np.random.randn(200))
+    res = catch22.catch22_all(data, catch24=True, short_names=True)
+    for name, short, val in zip(res['names'], res['short_names'], res['values']):
+        assert catch22.compute_feature(data, name) == val
+        assert catch22.compute_feature(data, short) == val
+    assert math.isnan(catch22.compute_feature([3.0] * 50, 'trev', mask_nans=False))
+    for bad_name in ('not_a_feature', 'CO_f1ecac'):
+        with pytest.raises(ValueError):
+            catch22.compute_feature(data, bad_name)
+
+def test_legacy_names_are_deprecated_aliases():
+    data = list(np.random.randn(200))
+    for row in catch22.feature_table(catch24=True):
+        if row['legacy_name'] == row['name']:
+            continue
+        with pytest.warns(DeprecationWarning):
+            assert getattr(catch22, row['legacy_name'])(data) == getattr(catch22, row['name'])(data)
 
 def test_invalid_input_raises_type_error():
-    # non-sequence input or non-numeric values should raise a clear TypeError (not a SystemError)
     for bad_input in (None, 3.0, [1.0, 'a', 3.0]):
         with pytest.raises(TypeError):
-            catch22_C.CO_f1ecac(bad_input)
-        with pytest.raises(TypeError):
-            catch22_C.CO_FirstMin_ac(bad_input)
-        with pytest.raises(TypeError):
             catch22.catch22_all(bad_input)
+        with pytest.raises(TypeError):
+            catch22.CO_FirstMin_ac(bad_input)
 
-def test_integer_features_return_int():
-    # features that return a lag are returned as Python ints
+def test_lag_features_are_integer_valued_floats():
     data = list(np.sin(np.arange(200) * 2 * np.pi / 20))
-    assert isinstance(catch22_C.CO_FirstMin_ac(data), int)
-    assert isinstance(catch22_C.PD_PeriodicityWang_th0_01(data), int)
+    assert catch22.PD_PeriodicityWang_th0_01(data) == 20.0
+    assert catch22.CO_FirstMin_ac(data) == 10.0
 
-def test_short_names_match_upstream_feature_list():
-    # short names must match catch22's featureList.txt (in the catch22 submodule)
+def test_feature_table_matches_upstream_feature_list():
+    # names, short names, legacy names and hctsa calls match catch22's featureList.txt
     feature_list = os.path.join(os.path.dirname(__file__), '..', 'src', 'catch22', 'featureList.txt')
     if not os.path.exists(feature_list):
         pytest.skip("catch22 submodule not checked out")
-    upstream = {}
     with open(feature_list) as f:
-        for line in f:
-            parts = line.split()
-            if len(parts) == 2 and not line.startswith('#'):
-                upstream[parts[0]] = parts[1]
+        rows = [line.rstrip('\n').split('\t') for line in f if line.strip() and not line.startswith('#')]
+    header, rows = rows[0], rows[1:]
+    assert header == ['name', 'short_name', 'legacy_name', 'hctsa_call']
+    table = catch22.feature_table(catch24=True)
+    assert [[row[k] for k in header] for row in table] == rows
     res = catch22.catch22_all(np.random.randn(100), catch24=True, short_names=True)
-    for name, short in zip(res['names'], res['short_names']):
-        assert upstream.get(name) == short, f"{name}: short name '{short}' differs from featureList.txt ('{upstream.get(name)}')."
+    assert res['names'] == [row['name'] for row in table]
+    assert res['short_names'] == [row['short_name'] for row in table]
+
+def test_no_warning_for_valid_input():
+    with warnings.catch_warnings():
+        warnings.simplefilter('error')
+        catch22.catch22_all(np.random.randn(100), catch24=True)
