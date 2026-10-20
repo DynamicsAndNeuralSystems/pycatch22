@@ -24,3 +24,16 @@ classifiers = [
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+# Wheels for every CPython that cibuildwheel supports (3.9 and later); Python 3.8
+# installs from the sdist. Free-threaded builds are skipped until the C extension
+# declares that it doesn't need the GIL.
+skip = "*t-*"
+# Each wheel is tested against catch22's expected outputs (all test series)
+test-requires = ["pytest", "numpy"]
+test-command = "pytest {project}/tests/unit_tests.py {project}/tests/test_features.py"
+
+[tool.cibuildwheel.macos]
+# Intel and Apple Silicon, both built on an Apple Silicon runner
+archs = ["x86_64", "arm64"]
