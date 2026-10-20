@@ -129,6 +129,18 @@ def test_individual_feature_functions_on_edge_cases():
     with pytest.warns(RuntimeWarning):
         assert math.isnan(catch22.CO_trev_1_num([1.0, np.nan, 2.0]))
 
+def test_compute_feature_by_name():
+    # by long or short name, the same value as catch22_all
+    data = list(np.random.randn(200))
+    res = catch22.catch22_all(data, catch24=True, short_names=True)
+    for name, short, val in zip(res['names'], res['short_names'], res['values']):
+        assert catch22.compute_feature(data, name) == val
+        assert catch22.compute_feature(data, short) == val
+    assert math.isnan(catch22.compute_feature([3.0] * 50, 'trev', mask_nans=False))
+    for bad_name in ('not_a_feature', 'CO_f1ecac'):
+        with pytest.raises(ValueError):
+            catch22.compute_feature(data, bad_name)
+
 def test_legacy_names_are_deprecated_aliases():
     data = list(np.random.randn(200))
     for row in catch22.feature_table(catch24=True):

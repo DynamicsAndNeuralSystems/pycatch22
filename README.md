@@ -88,7 +88,7 @@ A feature that cannot be estimated (e.g., for a constant time series, or `dfa` o
 Set `mask_nans=False` to get `NaN` instead, and `return_masked=True` to also return `'masked'`, which says which values were masked.
 A time series containing `NaN` or `Inf` gives `NaN` for every feature (with a warning).
 
-Each feature can also be computed on its own, e.g., `pycatch22.CO_FirstMin_ac(tsData)`, although this computes all the features, so use `catch22_all` for more than one.
+A single feature can also be computed on its own (giving the same value as `catch22_all`), by its long or short name, e.g., `pycatch22.compute_feature(tsData, 'acf_first_min')`, or with its own function, e.g., `pycatch22.CO_FirstMin_ac(tsData)`.
 `pycatch22.feature_table()` lists each feature's name, short name, name before v1.0, and the _hctsa_ call that reproduces it.
 
 ### Template analysis script

@@ -15,6 +15,8 @@ if TYPE_CHECKING:
 # order, from the C library (so the names always match catch22's)
 _CATCH24_FEATURES = tuple(catch22_C.features(True))
 _N_CATCH22 = len(catch22_C.features(False))
+# each feature's index, by its long and short names
+_INDEX_BY_NAME = {name: i for i, f in enumerate(_CATCH24_FEATURES) for name in f[:2]}
 
 
 def catch22_all(
@@ -63,6 +65,27 @@ def catch22_all(
         output['masked'] = masked
 
     return output
+
+
+def compute_feature(data: ArrayLike, name: str, mask_nans: bool = True) -> float:
+    '''
+    Compute a single feature of a time series, by its long or short name.
+
+    Gives exactly the value that catch22_all gives for the feature, but computes only that
+    feature. E.g., compute_feature(x, 'trev') or compute_feature(x, 'CO_trev_1_num').
+
+    Parameters
+    ----------
+    data : array_like
+        Input time-series data.
+    name : str
+        The feature's long or short name (as in feature_table(catch24=True)).
+    mask_nans : bool, optional
+        As for catch22_all.
+    '''
+    if name not in _INDEX_BY_NAME:
+        raise ValueError(f"no catch22 feature named {name!r}; see feature_table(catch24=True)")
+    return FEATURE_FUNCTIONS[_CATCH24_FEATURES[_INDEX_BY_NAME[name]][0]](data, mask_nans)
 
 
 def feature_table(catch24: bool = False) -> list[dict[str, str]]:
