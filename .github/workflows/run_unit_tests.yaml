@@ -39,3 +39,28 @@ jobs:
       - name: Profile performance vs. time series length
         run: |
           python ./tests/profile_performance.py --min-exp 0 --max-exp 5 --repeats 3
+
+  sdist:
+    # the sdist builds pycatch22 and runs its tests on its own, and stays small
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - name: Build the sdist
+        run: |
+          pip install build
+          python -m build --sdist --outdir dist .
+      - name: Check its size (under 1 MB)
+        run: |
+          ls -l dist
+          test $(stat -c %s dist/*.tar.gz) -lt 1000000
+      - name: Install it and run the tests from the unpacked sdist
+        run: |
+          pip install dist/*.tar.gz pytest numpy
+          mkdir unpacked && tar xzf dist/*.tar.gz -C unpacked
+          cd unpacked/pycatch22-*
+          pytest -v tests/unit_tests.py tests/test_features.py
