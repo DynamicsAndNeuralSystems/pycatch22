@@ -2,12 +2,10 @@
 name = "pycatch22"
 version = "1.0.1"
 authors = [
-    {name = "Carl H Lubba"},
-    {email = "carl.lubba@gmx.de"},
+    {name = "Carl H Lubba", email = "carl.lubba@gmx.de"},
 ]
 maintainers = [
-    {name = "Ben D Fulcher"},
-    {email = "ben.fulcher@sydney.edu.au"},
+    {name = "Ben D Fulcher", email = "ben.fulcher@sydney.edu.au"},
 ]
 description = "22 CAnonical Time-series Features"
 readme = "README.md"
