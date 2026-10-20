@@ -146,8 +146,11 @@ def test_legacy_names_are_deprecated_aliases():
     for row in catch22.feature_table(catch24=True):
         if row['legacy_name'] == row['name']:
             continue
-        with pytest.warns(DeprecationWarning):
+        with pytest.warns(DeprecationWarning) as record:
             assert getattr(catch22, row['legacy_name'])(data) == getattr(catch22, row['name'])(data)
+        # only the four features that were just renamed don't say their definition changed
+        renamed_only = row['legacy_name'] in ('DN_Mean', 'DN_Spread_Std', 'MD_hrv_classic_pnn40', 'FC_LocalSimple_mean3_stderr')
+        assert ('changed its definition' in str(record[0].message)) != renamed_only
 
 def test_invalid_input_raises_type_error():
     for bad_input in (None, 3.0, [1.0, 'a', 3.0]):
