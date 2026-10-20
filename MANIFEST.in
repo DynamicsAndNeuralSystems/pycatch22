@@ -1,2 +1,14 @@
+# The sdist holds what is needed to build pycatch22 and run its tests. From the
+# catch22 submodule, that is the C, featureList.txt, and the smaller test series
+# (basic, simulated, pathological). The 1000-series empirical set (113 MB) and the
+# parts of the catch22 repository that pycatch22 doesn't use are left out; the
+# full test set runs in CI from a clone with submodules.
 graft src
-exclude src/catch22/.git
+graft tests
+prune src/catch22/testData/empirical
+prune src/catch22/wrap_Matlab
+prune src/catch22/tests
+prune src/catch22/img
+prune src/catch22/.github
+exclude src/catch22/.git src/catch22/.gitignore
+global-exclude *.py[cod] __pycache__
