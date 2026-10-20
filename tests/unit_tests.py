@@ -118,6 +118,17 @@ def test_individual_feature_functions():
         assert individual == val or (math.isnan(val) and math.isnan(individual)), f"{name}: {individual} vs catch22_all {val}."
         assert getattr(catch22, name)(np.array(data)) == individual
 
+def test_individual_feature_functions_on_edge_cases():
+    # same values as catch22_all where features are masked (or NaN without masking)
+    for data in ([3.0] * 50, list(np.random.randn(60)), [2.0]):
+        for mask_nans in (True, False):
+            res = catch22.catch22_all(data, catch24=True, mask_nans=mask_nans)
+            for name, val in zip(res['names'], res['values']):
+                individual = getattr(catch22, name)(data, mask_nans=mask_nans)
+                assert individual == val or (math.isnan(val) and math.isnan(individual)), f"{name}: {individual} vs catch22_all {val}."
+    with pytest.warns(RuntimeWarning):
+        assert math.isnan(catch22.CO_trev_1_num([1.0, np.nan, 2.0]))
+
 def test_legacy_names_are_deprecated_aliases():
     data = list(np.random.randn(200))
     for row in catch22.feature_table(catch24=True):

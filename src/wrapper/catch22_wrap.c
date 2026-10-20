@@ -2,8 +2,8 @@
 
 #include "catch22.h"
 
-// Python bindings for catch22_compute() (catch22.h), the single entry point
-// shared by every catch22 wrapper.
+// Python bindings for catch22_compute() and catch22_compute_feature() (catch22.h),
+// the entry points shared by every catch22 wrapper.
 
 // Read a sequence of numbers (list, tuple, numpy array, range, ...) into a newly
 // allocated C array. Returns NULL with a Python exception set on failure; on
@@ -84,6 +84,38 @@ static PyObject * compute_wrapper(PyObject * self, PyObject * args)
     return Py_BuildValue("(NNO)", values, isMasked, status == CATCH22_OK ? Py_True : Py_False);
 }
 
+// compute_feature(data, index, mask_nans) -> (value, masked, ok)
+static PyObject * compute_feature_wrapper(PyObject * self, PyObject * args)
+{
+    PyObject * py_input;
+    int index;
+    int mask_nans = 1;
+    if (!PyArg_ParseTuple(args, "Oi|p", &py_input, &index, &mask_nans)){
+        return NULL;
+    }
+    if (index < 0 || index >= CATCH24_N_FEATURES){
+        PyErr_SetString(PyExc_IndexError, "feature index out of range");
+        return NULL;
+    }
+
+    int n;
+    double * y = parse_series(py_input, &n);
+    if (y == NULL){
+        return NULL;
+    }
+
+    double out;
+    int masked;
+    int status;
+    Py_BEGIN_ALLOW_THREADS
+    status = catch22_compute_feature(y, n, index, mask_nans, &out, &masked);
+    Py_END_ALLOW_THREADS
+    free(y);
+
+    return Py_BuildValue("(NOO)", PyFloat_FromDouble(out), masked ? Py_True : Py_False,
+                         status == CATCH22_OK ? Py_True : Py_False);
+}
+
 // features(catch24) -> list of (name, short name, legacy name, hctsa call)
 static PyObject * features_wrapper(PyObject * self, PyObject * args)
 {
@@ -112,6 +144,8 @@ static PyObject * features_wrapper(PyObject * self, PyObject * args)
 static PyMethodDef catch22Methods[] = {
     { "compute", compute_wrapper, METH_VARARGS,
       "compute(data, catch24=False, mask_nans=True) -> (values, masked, ok): catch22_compute() on a sequence of numbers" },
+    { "compute_feature", compute_feature_wrapper, METH_VARARGS,
+      "compute_feature(data, index, mask_nans=True) -> (value, masked, ok): catch22_compute_feature() on a sequence of numbers" },
     { "features", features_wrapper, METH_VARARGS,
       "features(catch24=False) -> list of (name, short name, legacy name, hctsa call)" },
     { NULL, NULL, 0, NULL }

@@ -81,11 +81,14 @@ def feature_table(catch24: bool = False) -> list[dict[str, str]]:
 
 def _single_feature(index: int, name: str) -> Callable[..., float]:
     def compute(data: ArrayLike, mask_nans: bool = True) -> float:
-        values, _, _ = catch22_C.compute(data, index >= _N_CATCH22, mask_nans)
-        return values[index]
+        value, _, ok = catch22_C.compute_feature(data, index, mask_nans)
+        if not ok:
+            warnings.warn("the time series is empty or contains NaN/Inf; the feature is NaN",
+                          RuntimeWarning, stacklevel=2)
+        return value
     compute.__name__ = compute.__qualname__ = name
-    compute.__doc__ = (f"Compute {name} ({_CATCH24_FEATURES[index][1]}) of a time series "
-                       f"(computes all features: use catch22_all for more than one).")
+    compute.__doc__ = (f"Compute {name} ({_CATCH24_FEATURES[index][1]}) of a time series, "
+                       f"exactly as catch22_all does (with the same mask_nans option).")
     return compute
 
 
