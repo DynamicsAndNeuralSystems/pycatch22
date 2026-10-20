@@ -1,126 +1,161 @@
-<p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
+<p align="center"><img src="https://raw.githubusercontent.com/DynamicsAndNeuralSystems/pycatch22/main/img/catch22_logo_square.png" alt="catch22 logo" height="200"/></p>
 
 <h1 align="center"><em>pycatch22</em>: CAnonical Time-series CHaracteristics in Python</h1>
 
 <p align="center">
-    <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
- 	  <a href="https://twitter.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a><br>
-    <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=downloads" alt="pycatch22 downloads" height="20"/></a>
-    <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=monthly&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=downloads%2Fmonth" alt="pycatch22 downloads per month" height="20"/></a>
-    <a href="https://anaconda.org/conda-forge/pycatch22"><img src="https://img.shields.io/conda/dn/conda-forge/pycatch22?label=conda%20downloads&color=blue" alt="pycatch22 conda downloads" height="20"/></a>
+  <a href="https://pypi.org/project/pycatch22/"><img src="https://img.shields.io/pypi/v/pycatch22?label=PyPI" alt="PyPI"/></a>
+  <a href="https://doi.org/10.1007/s10618-019-00647-x"><img src="https://img.shields.io/badge/paper-Data%20Min%20Knowl%20Disc%20(2019)-informational" alt="Paper"/></a>
+  <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License: GPL v3"/></a>
+  <a href="https://time-series-features.gitbook.io/catch22/language-specific-docs/python"><img src="https://img.shields.io/badge/docs-GitBook-blue" alt="Documentation"/></a>
+  <a href="https://github.com/DynamicsAndNeuralSystems/pycatch22/actions/workflows/run_unit_tests.yaml"><img src="https://github.com/DynamicsAndNeuralSystems/pycatch22/actions/workflows/run_unit_tests.yaml/badge.svg" alt="Tests"/></a>
+  <a href="https://github.com/DynamicsAndNeuralSystems/pycatch22/actions/workflows/wheels.yml"><img src="https://github.com/DynamicsAndNeuralSystems/pycatch22/actions/workflows/wheels.yml/badge.svg" alt="Wheels"/></a>
+  <br>
+  <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=downloads" alt="pycatch22 downloads"/></a>
+  <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=monthly&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=downloads%2Fmonth" alt="pycatch22 downloads per month"/></a>
+  <a href="https://anaconda.org/conda-forge/pycatch22"><img src="https://img.shields.io/conda/dn/conda-forge/pycatch22?label=conda%20downloads&color=blue" alt="pycatch22 conda downloads"/></a>
 </p>
 
+_pycatch22_ computes the [_catch22_](https://github.com/DynamicsAndNeuralSystems/catch22) time-series features in Python.
+_catch22_ is a set of 22 features, selected from the more than 7000 in [_hctsa_](https://github.com/benfulcher/hctsa) for their classification performance across 93 time-series classification problems ([Lubba et al., 2019](https://doi.org/10.1007/s10618-019-00647-x)).
+They capture a time series's dynamics, such as its autocorrelation, distribution of values, extreme events, scaling and predictability, and are fast to compute.
+_pycatch22_ wraps the _catch22_ C code, and has no runtime dependencies.
 
-## About
-
-[_catch22_](https://github.com/DynamicsAndNeuralSystems/catch22) is a collection of 22 time-series features coded in C that can be run from Python, as well as [R](https://github.com/hendersontrent/Rcatch22), [MATLAB](https://github.com/DynamicsAndNeuralSystems/catch22), and [Julia](https://github.com/brendanjohnharris/Catch22.jl).
-
-This package provides a Python wrapper of the C code as the module _pycatch22_, which has no runtime dependencies. It is licensed under the [GNU GPL v3 license](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
-
-### What do the features do?
-
-This [GitBook website](https://time-series-features.gitbook.io/catch22/information-about-catch22/feature-descriptions) is dedicated to describing the features.
-For their implementation in code, see the [main _catch22_ repository](https://github.com/DynamicsAndNeuralSystems/catch22).
-There is also information in the associated paper, &#x1F4D7; [Lubba et al. (2019)](https://doi.org/10.1007/s10618-019-00647-x).
-
-### Acknowledgement :+1:
-
-If you use this software, please read and cite this open-access article:
-
-- &#x1F4D7; Lubba et al. [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x), _Data Min Knowl Disc_ __33__, 1821 (2019).
+📖 **Full documentation:** the [Python guide](https://time-series-features.gitbook.io/catch22/language-specific-docs/python), and [what each feature measures](https://time-series-features.gitbook.io/catch22/information-about-catch22/feature-descriptions).
 
 ## Installation
-
-Using `pip` for [`pycatch22`](https://pypi.org/project/pycatch22/):
 
 ```bash
 pip install pycatch22
 ```
 
-_pycatch22_ supports Python 3.8 and later. If installation fails, upgrade `pip` (`python -m pip install --upgrade pip`) and check that a C compiler is available (it is needed to build from source).
+Pre-built wheels are available for Python 3.9 and later on Linux, macOS and Windows.
+Elsewhere (e.g., Python 3.8), `pip` builds _pycatch22_ from source, which needs a C compiler.
 
-It is also a [package on anaconda](https://anaconda.org/conda-forge/pycatch22) thanks to [@rpanai](https://github.com/rpanai), which you can install via `conda`:
+_pycatch22_ is also on [conda-forge](https://anaconda.org/conda-forge/pycatch22), thanks to [@rpanai](https://github.com/rpanai), although it can lag behind PyPI:
 
 ```bash
 conda install -c conda-forge pycatch22
 ```
 
-or `mamba`:
+<details>
+<summary>Installing from source</summary>
 
-```bash
-mamba install -c conda-forge pycatch22
-```
-
-If neither works, see [Manual install](#manual-install) below.
-
-## Usage
-
-All features are computed by `catch22_all`, which takes any sequence of numbers (a list, tuple, or `numpy` array) and returns a dictionary with the entries `'names'` (feature names) and `'values'` (feature values, as floats); invalid input raises a `TypeError`.
-For example, for a time series `tsData`:
-
-```python
-import random
-import pycatch22
-tsData = [random.gauss(0, 1) for _ in range(500)] # (or more interesting data!)
-results = pycatch22.catch22_all(tsData)
-```
-
-Usage (computing 22 features: _catch22_):
-
-```python
-pycatch22.catch22_all(tsData)
-```
-
-Usage (computing 24 features: _catch24_ = _catch22_ + mean + standard deviation):
-
-```python
-pycatch22.catch22_all(tsData, catch24=True)
-```
-
-We also include a 'short name' for each feature for easier reference (as outlined in the GitBook [Feature overview table](https://time-series-features.gitbook.io/catch22/feature-descriptions/feature-overview-table)).
-These short names can be included in the output from `catch22_all()` (as the entry `'short_names'`) by setting `short_names=True` as follows:
-
-```python
-pycatch22.catch22_all(tsData, catch24=True, short_names=True)
-```
-
-A feature that cannot be estimated (e.g., for a constant time series, or `dfa` on a series shorter than 79 samples) is _masked_ by default: set to a fixed value at the appropriate end of its range, so that 22 real numbers are always returned.
-Set `mask_nans=False` to get `NaN` instead, and `return_masked=True` to also return `'masked'`, which says which values were masked.
-A time series containing `NaN` or `Inf` gives `NaN` for every feature (with a warning).
-
-A single feature can also be computed on its own (giving the same value as `catch22_all`), by its long or short name, e.g., `pycatch22.compute_feature(tsData, 'acf_first_min')`, or with its own function, e.g., `pycatch22.CO_FirstMin_ac(tsData)`.
-`pycatch22.feature_table()` lists each feature's name, short name, name before v1.0, and the _hctsa_ call that reproduces it.
-
-### Template analysis script
-
-Thanks to [@jmoo2880](https://github.com/jmoo2880) for putting together a [demonstration notebook](https://github.com/jmoo2880/c22-usage-examples/) for using pycatch22 to extract features from a time-series dataset.
-
-### Usage notes
-
-- When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results.
-- **From _pycatch22_ v1.0** (which uses [_catch22_ v1.1.0](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.1.0)), every feature exactly reproduces its definition in _hctsa_ v3.0.0, so values change for most features.
-  Several features are renamed (e.g., `CO_f1ecac` is now `CO_FirstCrossing_acf_1e_pointOfCrossing`, and `centroid_freq` is replaced by the median frequency, `median_freq`); the old function names still work but are deprecated.
-  Features that cannot be estimated are masked by default rather than returning `NaN`, all values are floats, and the features are returned in the order of _catch22_'s `featureList.txt`.
-  See the [_catch22_ v1.0.0 release notes](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.0.0) for details.
-- From v0.3, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output.
-  From _pycatch22_ v0.6.0 (which uses _catch22_ v0.6.0), four features were corrected to match their MATLAB (_hctsa_) definitions, so their values differ from earlier versions: `PD_PeriodicityWang_th0_01` and `IN_AutoMutualInfoStats_40_gaussian_fmmi` now return the lag itself (previously the lag minus one), and `SB_BinaryStats_mean_longstretch1` and `SB_BinaryStats_diff_longstretch0` now return exact run lengths (previously one more for runs not at the start of the series).
-  Also from v0.6.0, the short names `transition_matrix` and `SD` were renamed `transition_variance` and `std`, to match the other _catch22_ implementations.
-- **Note:** _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
-  - From _catch22_ v0.3, if the location and spread of the raw time-series distribution may be important for your application, we suggest applying the function argument `catch24 = True` to your call to the _catch22_ function in the language of your choice.
-  This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.
-
-### Manual install
-
-The upstream _catch22_ C sources are included as a git submodule, so clone with submodules before building from source:
+The _catch22_ C code is a git submodule, so clone with submodules, then install (this needs a C compiler):
 
 ```bash
 git clone --recurse-submodules https://github.com/DynamicsAndNeuralSystems/pycatch22.git
-```
-
-(If you already cloned without `--recurse-submodules`, run `git submodule update --init` from the repository root.)
-
-Then install from the cloned directory (this compiles the C code, so needs a C compiler):
-
-```bash
+cd pycatch22
 pip install .
 ```
+
+If you already cloned without `--recurse-submodules`, run `git submodule update --init` first.
+
+</details>
+
+## Quick start
+
+```python
+import numpy as np
+import pycatch22
+
+x = np.sin(np.arange(500) * 2 * np.pi / 50) + 0.5 * np.random.default_rng(1).standard_normal(500)
+
+results = pycatch22.catch22_all(x)  # a dict of 'names' and 'values'
+features = dict(zip(results['names'], results['values']))
+```
+
+`catch22_all` takes any sequence of numbers (a list, tuple or `numpy` array), and returns the feature names and their values (as floats).
+Select features by name rather than by position.
+
+## Options
+
+| Option | Effect |
+|---|---|
+| `catch24=True` | Also compute the mean and standard deviation (_catch24_; see below) |
+| `short_names=True` | Also return `'short_names'`, e.g., `acf_timescale` for `CO_FirstCrossing_acf_1e_pointOfCrossing` |
+| `mask_nans=False` | Return `NaN` for features that cannot be estimated, instead of masking them (see below) |
+| `return_masked=True` | Also return `'masked'`, which says which values were masked |
+
+For example:
+
+```python
+results = pycatch22.catch22_all(x, catch24=True, short_names=True)
+# short_names: ['mode_5', 'mode_10', 'outlier_timing_pos', 'outlier_timing_neg', 'acf_timescale', ...]
+# values:      [-0.1257, -0.8436, 0.032, -0.044, 7.896, ...] (rounded)
+```
+
+**Single features.**
+Compute one feature by its long or short name, or with its own function (both give exactly the value `catch22_all` gives, computing only that feature):
+
+```python
+pycatch22.compute_feature(x, 'acf_first_min')
+pycatch22.CO_FirstMin_ac(x)
+```
+
+**The feature table.**
+`pycatch22.feature_table()` lists each feature's name, short name, name before v1.0, and the _hctsa_ code that reproduces it:
+
+```python
+pycatch22.feature_table()[4]
+# {'name': 'CO_FirstCrossing_acf_1e_pointOfCrossing', 'short_name': 'acf_timescale', 'legacy_name': 'CO_f1ecac',
+#  'hctsa_call': "CO_FirstCrossing(x_z,'ac',1/exp(1),'both').pointOfCrossing"}
+```
+
+**Many time series.**
+_pycatch22_ releases Python's global interpreter lock while it computes, so threads (e.g., a `concurrent.futures.ThreadPoolExecutor`) compute the features of different time series in parallel.
+
+For a worked example on a dataset, see [@jmoo2880](https://github.com/jmoo2880)'s [demonstration notebook](https://github.com/jmoo2880/c22-usage-examples/).
+
+## Usage notes
+
+- **Location and spread.**
+  Each time series is _z_-scored before the 22 features are computed, so they measure its dynamics and are insensitive to its mean and variance.
+  If the mean and spread matter for your application, use `catch24=True`, which adds the mean and standard deviation.
+- **Features that cannot be estimated** (e.g., for a constant series, or `dfa` on a series shorter than 79 samples) are _masked_ by default: set to a fixed value at the appropriate end of their range, so you always get 22 real numbers.
+  Use `mask_nans=False` to get `NaN` instead.
+  A series containing `NaN` or `Inf` gives `NaN` for every feature, with a warning.
+- **Sampling.**
+  A time series is an ordered sequence of values without time stamps, assumed to be evenly sampled.
+
+## Versions
+
+Feature values can change between versions, so **report the version of _pycatch22_ you used** so that your results can be reproduced.
+
+- **v1.0** (using [_catch22_ v1.1.0](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.1.0)): every feature now exactly reproduces its definition in [_hctsa_ v3.0.0](https://github.com/benfulcher/hctsa/tree/v3.0.0), so values change for most features.
+  Several features are renamed (e.g., `CO_f1ecac` is now `CO_FirstCrossing_acf_1e_pointOfCrossing`, and `centroid_freq` is replaced by the median frequency, `median_freq`); the old function names still work, but are deprecated.
+  Features that cannot be estimated are masked by default, all values are floats, and features are returned in _catch22_'s order (which differs from earlier versions).
+  See the [_catch22_ v1.0.0 release notes](https://github.com/DynamicsAndNeuralSystems/catch22/releases/tag/v1.0.0) for how each feature changed.
+- **v0.6.0:** four features were corrected to match their _hctsa_ definitions (`PD_PeriodicityWang_th0_01`, `IN_AutoMutualInfoStats_40_gaussian_fmmi`, `SB_BinaryStats_mean_longstretch1` and `SB_BinaryStats_diff_longstretch0`), and the short names `transition_matrix` and `SD` became `transition_variance` and `std`.
+- **v0.3:** `CO_f1ecac` changed from an integer to a linearly interpolated real value.
+
+See the [releases](https://github.com/DynamicsAndNeuralSystems/pycatch22/releases) for details.
+
+## Citing _catch22_
+
+If you use _pycatch22_, please cite the open-access paper:
+
+> C. H. Lubba, S. S. Sethi, P. Knaute, S. R. Schultz, B. D. Fulcher, N. S. Jones.
+> [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+> _Data Mining and Knowledge Discovery_ **33**, 1821–1852 (2019).
+
+<details>
+<summary>BibTeX</summary>
+
+```bibtex
+@article{lubba2019catch22,
+  title   = {catch22: {CA}nonical {T}ime-series {CH}aracteristics},
+  author  = {Lubba, Carl H. and Sethi, Sarab S. and Knaute, Philip and Schultz, Simon R. and Fulcher, Ben D. and Jones, Nick S.},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {33},
+  number  = {6},
+  pages   = {1821--1852},
+  year    = {2019},
+  doi     = {10.1007/s10618-019-00647-x}
+}
+```
+
+</details>
+
+## License
+
+_pycatch22_ is licensed under the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
