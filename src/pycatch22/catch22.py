@@ -92,7 +92,7 @@ def feature_table(catch24: bool = False) -> list[dict[str, str]]:
     '''
     Describe the features, in the order of catch22_all.
 
-    Each feature has its 'name', 'short_name', 'legacy_name' (its name in catch22 v0.x;
+    Each feature has its 'name', 'short_name', 'legacy_name' (its name in catch22 v0.x; most
     definitions have since changed to match hctsa, so values differ) and 'hctsa_call' (the
     hctsa v3.0.0 call that reproduces it exactly, on x_z, the z-scored series, or x, the raw
     series).
@@ -115,10 +115,19 @@ def _single_feature(index: int, name: str) -> Callable[..., float]:
     return compute
 
 
+# Features that catch22 v1.0 renamed without changing their definition (the others with a
+# different name before v1.0 were also redefined to match hctsa)
+_RENAMED_ONLY = {'DN_Mean', 'DN_Spread_Std', 'MD_hrv_classic_pnn40', 'FC_LocalSimple_mean3_stderr'}
+
+
 def _deprecated_alias(name: str, legacy_name: str, function: Callable[..., float]) -> Callable[..., float]:
+    if legacy_name in _RENAMED_ONLY:
+        message = f"{legacy_name} is now {name} (renamed in catch22 v1.0)"
+    else:
+        message = f"{legacy_name} is now {name} (catch22 v1.0, which also changed its definition to match hctsa)"
+
     def compute(data: ArrayLike, mask_nans: bool = True) -> float:
-        warnings.warn(f"{legacy_name} is now {name} (catch22 v1.0, which also changed its "
-                      f"definition to match hctsa)", DeprecationWarning, stacklevel=2)
+        warnings.warn(message, DeprecationWarning, stacklevel=2)
         return function(data, mask_nans)
     compute.__name__ = compute.__qualname__ = legacy_name
     compute.__doc__ = f"Deprecated name for {name}."
